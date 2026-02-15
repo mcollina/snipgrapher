@@ -52,9 +52,9 @@ Build a fully fledged, scriptable CLI alternative to [carbon-app/carbon](https:/
 
 ## Technical Architecture
 
-### Single Package Layout (`pkg/cli`)
-- Keep everything in one package: `pkg/cli`
-- Internal modules under `pkg/cli/src/`:
+### Single Package Layout (project root)
+- Keep everything in one package at repository root
+- Internal modules under `src/`:
   - `render/` (pipeline + exporters)
   - `theme/` (themes + token mapping)
   - `layout/` (frame/window/background)
@@ -74,7 +74,7 @@ Build a fully fledged, scriptable CLI alternative to [carbon-app/carbon](https:/
 - Keep backend abstracted behind an internal interface for pluggability
 
 ### CLI App
-- One distributable npm package from `pkg/cli`
+- One distributable npm package from the repository root
 - Subcommands and shared options in the same codebase
 - Rich terminal output (spinners, progress, errors)
 - Strict exit codes for CI reliability
@@ -88,7 +88,7 @@ Build a fully fledged, scriptable CLI alternative to [carbon-app/carbon](https:/
 ## Phased Delivery
 
 ### Phase 0 — Foundation (Week 1)
-- Initialize single-package layout under `pkg/cli`
+- Initialize single-package layout at project root
 - Define command surface and config schema
 - Implement `doctor` and `init` commands
 - Set up lint, format, test, typecheck, CI
@@ -119,7 +119,7 @@ Build a fully fledged, scriptable CLI alternative to [carbon-app/carbon](https:/
 
 ### Phase 5 — Public OSS Launch (when ready)
 - Switch repo visibility to public
-- Publish npm package (`snipgrapher`) from `pkg/cli`
+- Publish npm package (`snipgrapher`) from project root
 - Add contribution guide + code of conduct
 - Announce roadmap and first stable release
 
