@@ -137,8 +137,8 @@ Build a fully fledged, scriptable CLI alternative to [carbon-app/carbon](https:/
 
 ## Licensing and Attribution
 - Project license: MIT
-- Include upstream Carbon MIT license text in this repository
-- Maintain third-party attribution in `THIRD_PARTY_LICENSES/`
+- Include upstream Carbon MIT license text directly in `LICENSE`
+- Keep all required third-party license texts consolidated in `LICENSE`
 - Track lifted/ported code paths with source references in comments/NOTICE
 
 ## Backlog (post-v1)
