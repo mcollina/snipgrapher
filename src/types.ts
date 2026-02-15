@@ -1,4 +1,4 @@
-export type OutputFormat = 'svg' | 'png';
+export type OutputFormat = 'svg' | 'png' | 'webp';
 export type BackgroundStyle = 'solid' | 'gradient';
 
 export interface Theme {
@@ -40,6 +40,11 @@ export interface SnipgrapherConfig {
   backgroundStyle: BackgroundStyle;
   watermark?: string;
   format: OutputFormat;
+}
+
+export interface SnipgrapherConfigFile extends Partial<SnipgrapherConfig> {
+  defaultProfile?: string;
+  profiles?: Record<string, Partial<SnipgrapherConfig>>;
 }
 
 export interface RenderResult {

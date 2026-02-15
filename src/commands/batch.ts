@@ -18,10 +18,11 @@ export interface BatchCommandOptions {
   backgroundStyle?: BackgroundStyle;
   watermark?: string;
   language?: string;
+  profile?: string;
 }
 
 export async function runBatch(pattern: string, options: BatchCommandOptions): Promise<RenderResult[]> {
-  const config = await loadConfig();
+  const config = await loadConfig(process.cwd(), options.profile);
   const files = await fg(pattern, { onlyFiles: true, unique: true, dot: false });
 
   if (files.length === 0) {

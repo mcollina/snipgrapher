@@ -20,6 +20,7 @@ export interface RenderCommandOptions {
   backgroundStyle?: BackgroundStyle;
   watermark?: string;
   language?: string;
+  profile?: string;
   stdin?: boolean;
   code?: string;
 }
@@ -28,7 +29,7 @@ export async function runRender(
   input: string | undefined,
   options: RenderCommandOptions
 ): Promise<RenderResult> {
-  const config = await loadConfig();
+  const config = await loadConfig(process.cwd(), options.profile);
   const inputData = await resolveCodeInput({
     input,
     stdin: options.stdin,

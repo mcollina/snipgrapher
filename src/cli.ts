@@ -20,7 +20,7 @@ program
   .command('render')
   .argument('[input]', 'Input file path')
   .option('-o, --output <file>', 'Output file path')
-  .option('-f, --format <format>', 'Output format: svg|png')
+  .option('-f, --format <format>', 'Output format: svg|png|webp')
   .option('--theme <theme>', 'Theme name')
   .option('--font-family <fontFamily>', 'Font family')
   .option('--font-size <fontSize>', 'Font size', Number)
@@ -31,6 +31,7 @@ program
   .option('--background-style <style>', 'Background style: solid|gradient')
   .option('--watermark <text>', 'Add watermark text')
   .option('--language <language>', 'Language hint (or auto)')
+  .option('--profile <name>', 'Config profile name')
   .option('--stdin', 'Read code from stdin')
   .option('--code <code>', 'Inline code')
   .option('--json', 'Print machine-readable JSON result')
@@ -48,6 +49,7 @@ program
       backgroundStyle: options.backgroundStyle as BackgroundStyle | undefined,
       watermark: options.watermark,
       language: options.language,
+      profile: options.profile,
       stdin: options.stdin,
       code: options.code
     });
@@ -64,7 +66,7 @@ program
   .command('batch')
   .argument('<glob>', 'Glob pattern (e.g. src/**/*.ts)')
   .option('--out-dir <dir>', 'Output directory', 'snippets')
-  .option('-f, --format <format>', 'Output format: svg|png')
+  .option('-f, --format <format>', 'Output format: svg|png|webp')
   .option('--theme <theme>', 'Theme name')
   .option('--line-numbers', 'Enable line numbers')
   .option('--window-controls', 'Enable macOS-style traffic lights')
@@ -72,6 +74,7 @@ program
   .option('--background-style <style>', 'Background style: solid|gradient')
   .option('--watermark <text>', 'Add watermark text')
   .option('--language <language>', 'Language hint (or auto)')
+  .option('--profile <name>', 'Config profile name')
   .option('--json', 'Print machine-readable JSON result')
   .option('--manifest <file>', 'Write JSON manifest to file')
   .action(async (glob: string, options) => {
@@ -84,7 +87,8 @@ program
       shadow: options.shadow,
       backgroundStyle: options.backgroundStyle as BackgroundStyle | undefined,
       watermark: options.watermark,
-      language: options.language
+      language: options.language,
+      profile: options.profile
     });
 
     if (options.manifest) {
@@ -108,7 +112,7 @@ program
   .command('watch')
   .argument('<input>', 'Input file to watch')
   .option('-o, --output <file>', 'Output file path')
-  .option('-f, --format <format>', 'Output format: svg|png')
+  .option('-f, --format <format>', 'Output format: svg|png|webp')
   .option('--theme <theme>', 'Theme name')
   .option('--line-numbers', 'Enable line numbers')
   .option('--window-controls', 'Enable macOS-style traffic lights')
@@ -116,6 +120,7 @@ program
   .option('--background-style <style>', 'Background style: solid|gradient')
   .option('--watermark <text>', 'Add watermark text')
   .option('--language <language>', 'Language hint (or auto)')
+  .option('--profile <name>', 'Config profile name')
   .action(async (input: string, options) => {
     await runWatch(input, {
       output: options.output,
@@ -126,7 +131,8 @@ program
       shadow: options.shadow,
       backgroundStyle: options.backgroundStyle as BackgroundStyle | undefined,
       watermark: options.watermark,
-      language: options.language
+      language: options.language,
+      profile: options.profile
     });
   });
 

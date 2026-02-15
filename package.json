@@ -27,7 +27,8 @@
     "@resvg/resvg-js": "^2.6.2",
     "chokidar": "^4.0.3",
     "commander": "^13.1.0",
-    "fast-glob": "^3.3.3"
+    "fast-glob": "^3.3.3",
+    "sharp": "^0.34.4"
   },
   "devDependencies": {
     "@types/node": "^22.15.29",

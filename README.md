@@ -12,14 +12,14 @@ npm i -g snipgrapher
 
 ```bash
 snipgrapher render src/index.ts -o snippet.svg
-snipgrapher render src/index.ts -o snippet.png --format png
+snipgrapher render src/index.ts -o snippet.webp --format webp
 cat src/index.ts | snipgrapher render --stdin -o snippet.svg
 snipgrapher render src/index.ts --background-style gradient --window-controls --shadow
 snipgrapher render src/index.ts --watermark "snipgrapher" --language typescript
-snipgrapher render src/index.ts --json
+snipgrapher render src/index.ts --profile social --json
 snipgrapher batch "src/**/*.ts" --out-dir snippets
 snipgrapher batch "src/**/*.ts" --json --manifest snippets/manifest.json
-snipgrapher watch src/index.ts -o snippet.svg
+snipgrapher watch src/index.ts -o snippet.svg --profile social
 snipgrapher themes list
 snipgrapher doctor
 snipgrapher init
@@ -40,7 +40,16 @@ Create `snipgrapher.config.json`:
   "shadow": true,
   "backgroundStyle": "gradient",
   "watermark": "",
-  "format": "svg"
+  "format": "svg",
+  "defaultProfile": "default",
+  "profiles": {
+    "default": {},
+    "social": {
+      "padding": 48,
+      "fontSize": 16,
+      "watermark": "snipgrapher"
+    }
+  }
 }
 ```
 

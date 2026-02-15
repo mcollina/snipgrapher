@@ -15,6 +15,20 @@ export async function runInit(cwd = process.cwd()): Promise<void> {
     }
   }
 
-  await writeFile(target, `${JSON.stringify(defaultConfig, null, 2)}\n`, 'utf8');
+  const template = {
+    ...defaultConfig,
+    defaultProfile: 'default',
+    profiles: {
+      default: {},
+      social: {
+        fontSize: 16,
+        padding: 48,
+        lineNumbers: false,
+        watermark: 'snipgrapher'
+      }
+    }
+  };
+
+  await writeFile(target, `${JSON.stringify(template, null, 2)}\n`, 'utf8');
   console.log(`Created ${target}`);
 }

@@ -7,6 +7,7 @@ export function inferFormat(outputFile: string, fallback: OutputFormat): OutputF
 
   if (ext === '.png') return 'png';
   if (ext === '.svg') return 'svg';
+  if (ext === '.webp') return 'webp';
 
   return fallback;
 }

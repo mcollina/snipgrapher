@@ -6,7 +6,7 @@ import { validateConfig } from './validate-config.ts';
 test('validateConfig accepts valid partial config', () => {
   assert.doesNotThrow(() => {
     validateConfig({
-      format: 'svg',
+      format: 'webp',
       backgroundStyle: 'gradient',
       fontSize: 14,
       padding: 16,

@@ -18,10 +18,11 @@ export interface WatchCommandOptions {
   backgroundStyle?: BackgroundStyle;
   watermark?: string;
   language?: string;
+  profile?: string;
 }
 
 export async function runWatch(input: string, options: WatchCommandOptions): Promise<void> {
-  const config = await loadConfig();
+  const config = await loadConfig(process.cwd(), options.profile);
   const outputFile = options.output ?? `snippet.${options.format ?? config.format}`;
   const format = options.format ?? inferFormat(outputFile, config.format);
 
