@@ -1,6 +1,6 @@
 import type { Theme } from '../types.ts';
 
-interface Segment {
+export interface Segment {
   text: string;
   color: string;
 }
@@ -58,4 +58,8 @@ export function colorizeLine(line: string, theme: Theme): Segment[] {
   }
 
   return segments;
+}
+
+export function colorizeCode(code: string, theme: Theme): Segment[][] {
+  return code.replaceAll('\t', '  ').split('\n').map((line) => colorizeLine(line, theme));
 }

@@ -7,7 +7,7 @@ import { renderSvg } from './svg.ts';
 import { svgToWebp } from './webp.ts';
 
 export async function renderToFile(options: RenderOptions): Promise<void> {
-  const svg = renderSvg(options);
+  const svg = await renderSvg(options);
 
   await mkdir(dirname(options.outputFile), { recursive: true });
 

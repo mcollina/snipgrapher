@@ -19,6 +19,7 @@ export interface BatchCommandOptions {
   watermark?: string;
   language?: string;
   profile?: string;
+  concurrency?: number;
 }
 
 export async function runBatch(pattern: string, options: BatchCommandOptions): Promise<RenderResult[]> {
@@ -32,38 +33,52 @@ export async function runBatch(pattern: string, options: BatchCommandOptions): P
   const outDir = options.outDir ?? 'snippets';
   const format = options.format ?? config.format;
   const theme = options.theme ?? config.theme;
+  const concurrency = Math.max(1, Math.min(options.concurrency ?? 4, 32));
 
-  const results: RenderResult[] = [];
+  const results: RenderResult[] = new Array(files.length);
+  let cursor = 0;
 
-  for (const file of files) {
-    const outputFile = join(outDir, `${basename(file)}.${format}`);
-    const language = detectLanguage(file, options.language);
+  const worker = async (): Promise<void> => {
+    while (true) {
+      const idx = cursor;
+      cursor += 1;
 
-    await renderToFile({
-      code: await readFile(file, 'utf8'),
-      outputFile,
-      format,
-      theme,
-      fontFamily: config.fontFamily,
-      fontSize: config.fontSize,
-      padding: config.padding,
-      lineNumbers: options.lineNumbers ?? config.lineNumbers,
-      windowControls: options.windowControls ?? config.windowControls,
-      shadow: options.shadow ?? config.shadow,
-      backgroundStyle: options.backgroundStyle ?? config.backgroundStyle,
-      watermark: options.watermark ?? config.watermark,
-      language,
-      title: file
-    });
+      if (idx >= files.length) {
+        return;
+      }
 
-    results.push({
-      input: file,
-      outputFile,
-      format,
-      theme,
-      language
-    });
-  }
+      const file = files[idx];
+      const outputFile = join(outDir, `${basename(file)}.${format}`);
+      const language = detectLanguage(file, options.language);
+
+      await renderToFile({
+        code: await readFile(file, 'utf8'),
+        outputFile,
+        format,
+        theme,
+        fontFamily: config.fontFamily,
+        fontSize: config.fontSize,
+        padding: config.padding,
+        lineNumbers: options.lineNumbers ?? config.lineNumbers,
+        windowControls: options.windowControls ?? config.windowControls,
+        shadow: options.shadow ?? config.shadow,
+        backgroundStyle: options.backgroundStyle ?? config.backgroundStyle,
+        watermark: options.watermark ?? config.watermark,
+        language,
+        title: file
+      });
+
+      results[idx] = {
+        input: file,
+        outputFile,
+        format,
+        theme,
+        language
+      };
+    }
+  };
+
+  await Promise.all(Array.from({ length: Math.min(concurrency, files.length) }, worker));
 
   return results;
 }

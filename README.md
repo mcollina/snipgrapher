@@ -1,6 +1,7 @@
 # snipgrapher
 
 CLI to generate image snippets from code files, stdin, or inline source.
+Uses Shiki-based syntax highlighting with a built-in fallback tokenizer.
 
 ## Install
 
@@ -17,7 +18,7 @@ cat src/index.ts | snipgrapher render --stdin -o snippet.svg
 snipgrapher render src/index.ts --background-style gradient --window-controls --shadow
 snipgrapher render src/index.ts --watermark "snipgrapher" --language typescript
 snipgrapher render src/index.ts --profile social --json
-snipgrapher batch "src/**/*.ts" --out-dir snippets
+snipgrapher batch "src/**/*.ts" --out-dir snippets --concurrency 6
 snipgrapher batch "src/**/*.ts" --json --manifest snippets/manifest.json
 snipgrapher watch src/index.ts -o snippet.svg --profile social
 snipgrapher themes list

@@ -1,6 +1,6 @@
 import type { RenderOptions } from '../types.ts';
 import { getTheme } from '../theme/themes.ts';
-import { colorizeLine } from './tokenize.ts';
+import { highlightCode } from './highlight.ts';
 
 function escapeXml(value: string): string {
   return value
@@ -23,9 +23,10 @@ function withOpacity(hex: string, alphaHex: string): string {
   return `${normalized}${alphaHex}`;
 }
 
-export function renderSvg(options: RenderOptions): string {
+export async function renderSvg(options: RenderOptions): Promise<string> {
   const theme = getTheme(options.theme);
   const lines = options.code.replaceAll('\t', '  ').split('\n');
+  const highlighted = await highlightCode(options.code, options.theme, options.language);
   const maxLine = Math.max(...lines.map((line) => line.length), 1);
 
   const lineHeight = Math.round(options.fontSize * 1.6);
@@ -46,9 +47,9 @@ export function renderSvg(options: RenderOptions): string {
   let y = options.padding + headerHeight + cardY;
 
   const textRows = lines
-    .map((line, idx) => {
+    .map((_, idx) => {
       y += lineHeight;
-      const segments = colorizeLine(line, theme)
+      const segments = (highlighted[idx] ?? [{ text: ' ', color: theme.foreground }])
         .map((segment) => `<tspan fill="${segment.color}">${escapeXml(segment.text)}</tspan>`)
         .join('');
 

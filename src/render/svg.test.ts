@@ -16,8 +16,8 @@ const baseOptions = {
   backgroundStyle: 'gradient' as const
 };
 
-test('renderSvg escapes XML special chars', () => {
-  const svg = renderSvg({
+test('renderSvg escapes XML special chars', async () => {
+  const svg = await renderSvg({
     ...baseOptions,
     code: 'const a = "<tag>" & true;'
   });
@@ -26,8 +26,8 @@ test('renderSvg escapes XML special chars', () => {
   assert.match(svg, /&amp; true/);
 });
 
-test('renderSvg adds line numbers when enabled', () => {
-  const svg = renderSvg({
+test('renderSvg adds line numbers when enabled', async () => {
+  const svg = await renderSvg({
     ...baseOptions,
     code: 'line1\nline2',
     lineNumbers: true
@@ -37,8 +37,8 @@ test('renderSvg adds line numbers when enabled', () => {
   assert.match(svg, />2<\/text>/);
 });
 
-test('renderSvg renders window controls and watermark', () => {
-  const svg = renderSvg({
+test('renderSvg renders window controls and watermark', async () => {
+  const svg = await renderSvg({
     ...baseOptions,
     code: 'const x = 1',
     watermark: 'snipgrapher'

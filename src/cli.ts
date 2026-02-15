@@ -75,6 +75,7 @@ program
   .option('--watermark <text>', 'Add watermark text')
   .option('--language <language>', 'Language hint (or auto)')
   .option('--profile <name>', 'Config profile name')
+  .option('--concurrency <n>', 'Batch render concurrency (default: 4)', Number)
   .option('--json', 'Print machine-readable JSON result')
   .option('--manifest <file>', 'Write JSON manifest to file')
   .action(async (glob: string, options) => {
@@ -88,7 +89,8 @@ program
       backgroundStyle: options.backgroundStyle as BackgroundStyle | undefined,
       watermark: options.watermark,
       language: options.language,
-      profile: options.profile
+      profile: options.profile,
+      concurrency: options.concurrency
     });
 
     if (options.manifest) {
