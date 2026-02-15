@@ -132,7 +132,6 @@ Build a fully fledged, scriptable CLI alternative to [carbon-app/carbon](https:/
 
 ## Security & Supply Chain
 - Pin and audit critical dependencies
-- Generate SBOM
 - Dependabot/Renovate automation
 - Trusted publishing pipeline for npm
 
