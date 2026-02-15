@@ -1,0 +1,36 @@
+{
+  "name": "snipgrapher",
+  "version": "0.1.0",
+  "description": "CLI to generate beautiful code snippet images",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "snipgrapher": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test src/**/*.test.ts",
+    "dev": "node src/cli.ts",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "dependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "chokidar": "^4.0.3",
+    "commander": "^13.1.0",
+    "fast-glob": "^3.3.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.29",
+    "typescript": "^5.8.3"
+  }
+}

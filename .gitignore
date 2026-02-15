@@ -1,2 +1,5 @@
 .githuman/
 .pi/
+node_modules/
+dist/
+*.log
