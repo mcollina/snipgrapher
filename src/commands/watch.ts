@@ -4,7 +4,8 @@ import chokidar from 'chokidar';
 
 import { loadConfig } from '../config/load-config.ts';
 import { renderToFile } from '../render/pipeline.ts';
-import type { OutputFormat } from '../types.ts';
+import type { BackgroundStyle, OutputFormat } from '../types.ts';
+import { detectLanguage } from '../utils/language.ts';
 import { inferFormat } from '../utils/output.ts';
 
 export interface WatchCommandOptions {
@@ -12,6 +13,11 @@ export interface WatchCommandOptions {
   format?: OutputFormat;
   theme?: string;
   lineNumbers?: boolean;
+  windowControls?: boolean;
+  shadow?: boolean;
+  backgroundStyle?: BackgroundStyle;
+  watermark?: string;
+  language?: string;
 }
 
 export async function runWatch(input: string, options: WatchCommandOptions): Promise<void> {
@@ -31,6 +37,11 @@ export async function runWatch(input: string, options: WatchCommandOptions): Pro
       fontSize: config.fontSize,
       padding: config.padding,
       lineNumbers: options.lineNumbers ?? config.lineNumbers,
+      windowControls: options.windowControls ?? config.windowControls,
+      shadow: options.shadow ?? config.shadow,
+      backgroundStyle: options.backgroundStyle ?? config.backgroundStyle,
+      watermark: options.watermark ?? config.watermark,
+      language: detectLanguage(input, options.language),
       title: input
     });
 

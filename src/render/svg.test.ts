@@ -3,16 +3,23 @@ import assert from 'node:assert/strict';
 
 import { renderSvg } from './svg.ts';
 
+const baseOptions = {
+  outputFile: 'out.svg',
+  format: 'svg' as const,
+  theme: 'dracula',
+  fontFamily: 'monospace',
+  fontSize: 14,
+  padding: 20,
+  lineNumbers: false,
+  windowControls: true,
+  shadow: true,
+  backgroundStyle: 'gradient' as const
+};
+
 test('renderSvg escapes XML special chars', () => {
   const svg = renderSvg({
-    code: 'const a = "<tag>" & true;',
-    outputFile: 'out.svg',
-    format: 'svg',
-    theme: 'dracula',
-    fontFamily: 'monospace',
-    fontSize: 14,
-    padding: 20,
-    lineNumbers: false
+    ...baseOptions,
+    code: 'const a = "<tag>" & true;'
   });
 
   assert.match(svg, /&lt;tag&gt;/);
@@ -21,16 +28,22 @@ test('renderSvg escapes XML special chars', () => {
 
 test('renderSvg adds line numbers when enabled', () => {
   const svg = renderSvg({
+    ...baseOptions,
     code: 'line1\nline2',
-    outputFile: 'out.svg',
-    format: 'svg',
-    theme: 'dracula',
-    fontFamily: 'monospace',
-    fontSize: 14,
-    padding: 20,
     lineNumbers: true
   });
 
   assert.match(svg, />1<\/text>/);
   assert.match(svg, />2<\/text>/);
+});
+
+test('renderSvg renders window controls and watermark', () => {
+  const svg = renderSvg({
+    ...baseOptions,
+    code: 'const x = 1',
+    watermark: 'snipgrapher'
+  });
+
+  assert.match(svg, /#ff5f57/);
+  assert.match(svg, /snipgrapher/);
 });

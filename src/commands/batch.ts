@@ -5,13 +5,19 @@ import fg from 'fast-glob';
 
 import { loadConfig } from '../config/load-config.ts';
 import { renderToFile } from '../render/pipeline.ts';
-import type { OutputFormat } from '../types.ts';
+import type { BackgroundStyle, OutputFormat } from '../types.ts';
+import { detectLanguage } from '../utils/language.ts';
 
 export interface BatchCommandOptions {
   outDir?: string;
   format?: OutputFormat;
   theme?: string;
   lineNumbers?: boolean;
+  windowControls?: boolean;
+  shadow?: boolean;
+  backgroundStyle?: BackgroundStyle;
+  watermark?: string;
+  language?: string;
 }
 
 export async function runBatch(pattern: string, options: BatchCommandOptions): Promise<void> {
@@ -37,6 +43,11 @@ export async function runBatch(pattern: string, options: BatchCommandOptions): P
       fontSize: config.fontSize,
       padding: config.padding,
       lineNumbers: options.lineNumbers ?? config.lineNumbers,
+      windowControls: options.windowControls ?? config.windowControls,
+      shadow: options.shadow ?? config.shadow,
+      backgroundStyle: options.backgroundStyle ?? config.backgroundStyle,
+      watermark: options.watermark ?? config.watermark,
+      language: detectLanguage(file, options.language),
       title: file
     });
 

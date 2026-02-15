@@ -8,7 +8,7 @@ import { runInit } from './commands/init.ts';
 import { runRender } from './commands/render.ts';
 import { runThemesList, runThemesPreview } from './commands/themes.ts';
 import { runWatch } from './commands/watch.ts';
-import type { OutputFormat } from './types.ts';
+import type { BackgroundStyle, OutputFormat } from './types.ts';
 import { printError } from './utils/errors.ts';
 
 const program = new Command();
@@ -25,6 +25,11 @@ program
   .option('--font-size <fontSize>', 'Font size', Number)
   .option('--padding <padding>', 'Frame padding', Number)
   .option('--line-numbers', 'Enable line numbers')
+  .option('--window-controls', 'Enable macOS-style traffic lights')
+  .option('--shadow', 'Enable card shadow')
+  .option('--background-style <style>', 'Background style: solid|gradient')
+  .option('--watermark <text>', 'Add watermark text')
+  .option('--language <language>', 'Language hint (or auto)')
   .option('--stdin', 'Read code from stdin')
   .option('--code <code>', 'Inline code')
   .action(async (input: string | undefined, options) => {
@@ -36,6 +41,11 @@ program
       fontSize: options.fontSize,
       padding: options.padding,
       lineNumbers: options.lineNumbers,
+      windowControls: options.windowControls,
+      shadow: options.shadow,
+      backgroundStyle: options.backgroundStyle as BackgroundStyle | undefined,
+      watermark: options.watermark,
+      language: options.language,
       stdin: options.stdin,
       code: options.code
     });
@@ -48,12 +58,22 @@ program
   .option('-f, --format <format>', 'Output format: svg|png')
   .option('--theme <theme>', 'Theme name')
   .option('--line-numbers', 'Enable line numbers')
+  .option('--window-controls', 'Enable macOS-style traffic lights')
+  .option('--shadow', 'Enable card shadow')
+  .option('--background-style <style>', 'Background style: solid|gradient')
+  .option('--watermark <text>', 'Add watermark text')
+  .option('--language <language>', 'Language hint (or auto)')
   .action(async (glob: string, options) => {
     await runBatch(glob, {
       outDir: options.outDir,
       format: options.format as OutputFormat | undefined,
       theme: options.theme,
-      lineNumbers: options.lineNumbers
+      lineNumbers: options.lineNumbers,
+      windowControls: options.windowControls,
+      shadow: options.shadow,
+      backgroundStyle: options.backgroundStyle as BackgroundStyle | undefined,
+      watermark: options.watermark,
+      language: options.language
     });
   });
 
@@ -64,12 +84,22 @@ program
   .option('-f, --format <format>', 'Output format: svg|png')
   .option('--theme <theme>', 'Theme name')
   .option('--line-numbers', 'Enable line numbers')
+  .option('--window-controls', 'Enable macOS-style traffic lights')
+  .option('--shadow', 'Enable card shadow')
+  .option('--background-style <style>', 'Background style: solid|gradient')
+  .option('--watermark <text>', 'Add watermark text')
+  .option('--language <language>', 'Language hint (or auto)')
   .action(async (input: string, options) => {
     await runWatch(input, {
       output: options.output,
       format: options.format as OutputFormat | undefined,
       theme: options.theme,
-      lineNumbers: options.lineNumbers
+      lineNumbers: options.lineNumbers,
+      windowControls: options.windowControls,
+      shadow: options.shadow,
+      backgroundStyle: options.backgroundStyle as BackgroundStyle | undefined,
+      watermark: options.watermark,
+      language: options.language
     });
   });
 

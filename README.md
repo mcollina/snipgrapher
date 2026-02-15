@@ -14,6 +14,8 @@ npm i -g snipgrapher
 snipgrapher render src/index.ts -o snippet.svg
 snipgrapher render src/index.ts -o snippet.png --format png
 cat src/index.ts | snipgrapher render --stdin -o snippet.svg
+snipgrapher render src/index.ts --background-style gradient --window-controls --shadow
+snipgrapher render src/index.ts --watermark "snipgrapher" --language typescript
 snipgrapher batch "src/**/*.ts" --out-dir snippets
 snipgrapher watch src/index.ts -o snippet.svg
 snipgrapher themes list
@@ -32,6 +34,10 @@ Create `snipgrapher.config.json`:
   "fontSize": 14,
   "padding": 32,
   "lineNumbers": true,
+  "windowControls": true,
+  "shadow": true,
+  "backgroundStyle": "gradient",
+  "watermark": "",
   "format": "svg"
 }
 ```

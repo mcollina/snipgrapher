@@ -1,4 +1,5 @@
 export type OutputFormat = 'svg' | 'png';
+export type BackgroundStyle = 'solid' | 'gradient';
 
 export interface Theme {
   name: string;
@@ -20,6 +21,11 @@ export interface RenderOptions {
   fontSize: number;
   padding: number;
   lineNumbers: boolean;
+  windowControls: boolean;
+  shadow: boolean;
+  backgroundStyle: BackgroundStyle;
+  watermark?: string;
+  language?: string;
   title?: string;
 }
 
@@ -29,5 +35,9 @@ export interface SnipgrapherConfig {
   fontSize: number;
   padding: number;
   lineNumbers: boolean;
+  windowControls: boolean;
+  shadow: boolean;
+  backgroundStyle: BackgroundStyle;
+  watermark?: string;
   format: OutputFormat;
 }

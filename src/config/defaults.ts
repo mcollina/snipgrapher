@@ -6,5 +6,9 @@ export const defaultConfig: SnipgrapherConfig = {
   fontSize: 14,
   padding: 32,
   lineNumbers: false,
+  windowControls: true,
+  shadow: true,
+  backgroundStyle: 'gradient',
+  watermark: '',
   format: 'svg'
 };
