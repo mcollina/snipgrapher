@@ -27,9 +27,11 @@
     "@resvg/resvg-js": "^2.6.2",
     "chokidar": "^4.0.3",
     "commander": "^13.1.0",
+    "@iarna/toml": "^2.2.5",
     "fast-glob": "^3.3.3",
     "shiki": "^3.13.0",
-    "sharp": "^0.34.4"
+    "sharp": "^0.34.4",
+    "yaml": "^2.8.1"
   },
   "devDependencies": {
     "@types/node": "^22.15.29",

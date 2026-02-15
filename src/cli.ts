@@ -12,6 +12,10 @@ import type { BackgroundStyle, OutputFormat } from './types.ts';
 import { printError } from './utils/errors.ts';
 import { printJson, writeJsonFile } from './utils/report.ts';
 
+function optionalBoolean(command: Command, name: string, value: boolean | undefined): boolean | undefined {
+  return command.getOptionValueSource(name) === 'default' ? undefined : value;
+}
+
 const program = new Command();
 
 program.name('snipgrapher').description('Render code snippets to images').version('0.1.0');
@@ -35,7 +39,7 @@ program
   .option('--stdin', 'Read code from stdin')
   .option('--code <code>', 'Inline code')
   .option('--json', 'Print machine-readable JSON result')
-  .action(async (input: string | undefined, options) => {
+  .action(async (input: string | undefined, options, command: Command) => {
     const result = await runRender(input, {
       output: options.output,
       format: options.format as OutputFormat | undefined,
@@ -43,9 +47,9 @@ program
       fontFamily: options.fontFamily,
       fontSize: options.fontSize,
       padding: options.padding,
-      lineNumbers: options.lineNumbers,
-      windowControls: options.windowControls,
-      shadow: options.shadow,
+      lineNumbers: optionalBoolean(command, 'lineNumbers', options.lineNumbers),
+      windowControls: optionalBoolean(command, 'windowControls', options.windowControls),
+      shadow: optionalBoolean(command, 'shadow', options.shadow),
       backgroundStyle: options.backgroundStyle as BackgroundStyle | undefined,
       watermark: options.watermark,
       language: options.language,
@@ -78,14 +82,14 @@ program
   .option('--concurrency <n>', 'Batch render concurrency (default: 4)', Number)
   .option('--json', 'Print machine-readable JSON result')
   .option('--manifest <file>', 'Write JSON manifest to file')
-  .action(async (glob: string, options) => {
+  .action(async (glob: string, options, command: Command) => {
     const results = await runBatch(glob, {
       outDir: options.outDir,
       format: options.format as OutputFormat | undefined,
       theme: options.theme,
-      lineNumbers: options.lineNumbers,
-      windowControls: options.windowControls,
-      shadow: options.shadow,
+      lineNumbers: optionalBoolean(command, 'lineNumbers', options.lineNumbers),
+      windowControls: optionalBoolean(command, 'windowControls', options.windowControls),
+      shadow: optionalBoolean(command, 'shadow', options.shadow),
       backgroundStyle: options.backgroundStyle as BackgroundStyle | undefined,
       watermark: options.watermark,
       language: options.language,
@@ -123,14 +127,14 @@ program
   .option('--watermark <text>', 'Add watermark text')
   .option('--language <language>', 'Language hint (or auto)')
   .option('--profile <name>', 'Config profile name')
-  .action(async (input: string, options) => {
+  .action(async (input: string, options, command: Command) => {
     await runWatch(input, {
       output: options.output,
       format: options.format as OutputFormat | undefined,
       theme: options.theme,
-      lineNumbers: options.lineNumbers,
-      windowControls: options.windowControls,
-      shadow: options.shadow,
+      lineNumbers: optionalBoolean(command, 'lineNumbers', options.lineNumbers),
+      windowControls: optionalBoolean(command, 'windowControls', options.windowControls),
+      shadow: optionalBoolean(command, 'shadow', options.shadow),
       backgroundStyle: options.backgroundStyle as BackgroundStyle | undefined,
       watermark: options.watermark,
       language: options.language,

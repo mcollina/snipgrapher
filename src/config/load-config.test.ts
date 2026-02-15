@@ -38,6 +38,31 @@ test('loadConfig applies selected profile', async () => {
   }
 });
 
+test('loadConfig reads yaml config', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'snipgrapher-config-'));
+
+  try {
+    await writeFile(
+      join(dir, 'snipgrapher.config.yaml'),
+      [
+        'theme: githubDark',
+        'format: webp',
+        'profiles:',
+        '  social:',
+        '    padding: 50'
+      ].join('\n')
+    );
+
+    const config = await loadConfig(dir, 'social');
+
+    assert.equal(config.theme, 'githubDark');
+    assert.equal(config.format, 'webp');
+    assert.equal(config.padding, 50);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
 test('loadConfig throws on unknown explicit profile', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'snipgrapher-config-'));
 

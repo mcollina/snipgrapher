@@ -28,7 +28,13 @@ snipgrapher init
 
 ## Config
 
-Create `snipgrapher.config.json`:
+Supported config files (first match wins):
+- `snipgrapher.config.json`
+- `snipgrapher.config.yaml`
+- `snipgrapher.config.yml`
+- `snipgrapher.config.toml`
+
+Example (`snipgrapher.config.json`):
 
 ```json
 {
