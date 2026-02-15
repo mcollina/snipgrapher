@@ -41,3 +41,11 @@ export interface SnipgrapherConfig {
   watermark?: string;
   format: OutputFormat;
 }
+
+export interface RenderResult {
+  input?: string;
+  outputFile: string;
+  format: OutputFormat;
+  theme: string;
+  language?: string;
+}

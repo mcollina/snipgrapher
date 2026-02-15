@@ -5,7 +5,7 @@ import fg from 'fast-glob';
 
 import { loadConfig } from '../config/load-config.ts';
 import { renderToFile } from '../render/pipeline.ts';
-import type { BackgroundStyle, OutputFormat } from '../types.ts';
+import type { BackgroundStyle, OutputFormat, RenderResult } from '../types.ts';
 import { detectLanguage } from '../utils/language.ts';
 
 export interface BatchCommandOptions {
@@ -20,7 +20,7 @@ export interface BatchCommandOptions {
   language?: string;
 }
 
-export async function runBatch(pattern: string, options: BatchCommandOptions): Promise<void> {
+export async function runBatch(pattern: string, options: BatchCommandOptions): Promise<RenderResult[]> {
   const config = await loadConfig();
   const files = await fg(pattern, { onlyFiles: true, unique: true, dot: false });
 
@@ -30,15 +30,19 @@ export async function runBatch(pattern: string, options: BatchCommandOptions): P
 
   const outDir = options.outDir ?? 'snippets';
   const format = options.format ?? config.format;
+  const theme = options.theme ?? config.theme;
+
+  const results: RenderResult[] = [];
 
   for (const file of files) {
     const outputFile = join(outDir, `${basename(file)}.${format}`);
+    const language = detectLanguage(file, options.language);
 
     await renderToFile({
       code: await readFile(file, 'utf8'),
       outputFile,
       format,
-      theme: options.theme ?? config.theme,
+      theme,
       fontFamily: config.fontFamily,
       fontSize: config.fontSize,
       padding: config.padding,
@@ -47,10 +51,18 @@ export async function runBatch(pattern: string, options: BatchCommandOptions): P
       shadow: options.shadow ?? config.shadow,
       backgroundStyle: options.backgroundStyle ?? config.backgroundStyle,
       watermark: options.watermark ?? config.watermark,
-      language: detectLanguage(file, options.language),
+      language,
       title: file
     });
 
-    console.log(`Rendered ${outputFile}`);
+    results.push({
+      input: file,
+      outputFile,
+      format,
+      theme,
+      language
+    });
   }
+
+  return results;
 }

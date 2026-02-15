@@ -16,7 +16,9 @@ snipgrapher render src/index.ts -o snippet.png --format png
 cat src/index.ts | snipgrapher render --stdin -o snippet.svg
 snipgrapher render src/index.ts --background-style gradient --window-controls --shadow
 snipgrapher render src/index.ts --watermark "snipgrapher" --language typescript
+snipgrapher render src/index.ts --json
 snipgrapher batch "src/**/*.ts" --out-dir snippets
+snipgrapher batch "src/**/*.ts" --json --manifest snippets/manifest.json
 snipgrapher watch src/index.ts -o snippet.svg
 snipgrapher themes list
 snipgrapher doctor
@@ -41,3 +43,5 @@ Create `snipgrapher.config.json`:
   "format": "svg"
 }
 ```
+
+Invalid config values are rejected with actionable validation errors.

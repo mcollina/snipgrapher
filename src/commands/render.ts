@@ -2,7 +2,7 @@ import { basename } from 'node:path';
 
 import { loadConfig } from '../config/load-config.ts';
 import { renderToFile } from '../render/pipeline.ts';
-import type { BackgroundStyle, OutputFormat } from '../types.ts';
+import type { BackgroundStyle, OutputFormat, RenderResult } from '../types.ts';
 import { resolveCodeInput } from '../utils/input.ts';
 import { detectLanguage } from '../utils/language.ts';
 import { inferFormat } from '../utils/output.ts';
@@ -24,7 +24,10 @@ export interface RenderCommandOptions {
   code?: string;
 }
 
-export async function runRender(input: string | undefined, options: RenderCommandOptions): Promise<void> {
+export async function runRender(
+  input: string | undefined,
+  options: RenderCommandOptions
+): Promise<RenderResult> {
   const config = await loadConfig();
   const inputData = await resolveCodeInput({
     input,
@@ -34,12 +37,14 @@ export async function runRender(input: string | undefined, options: RenderComman
 
   const outputFile = options.output ?? `snippet.${options.format ?? config.format}`;
   const format = options.format ?? inferFormat(outputFile, config.format);
+  const theme = options.theme ?? config.theme;
+  const language = detectLanguage(input, options.language);
 
   await renderToFile({
     code: inputData.code,
     outputFile,
     format,
-    theme: options.theme ?? config.theme,
+    theme,
     fontFamily: options.fontFamily ?? config.fontFamily,
     fontSize: options.fontSize ?? config.fontSize,
     padding: options.padding ?? config.padding,
@@ -48,9 +53,15 @@ export async function runRender(input: string | undefined, options: RenderComman
     shadow: options.shadow ?? config.shadow,
     backgroundStyle: options.backgroundStyle ?? config.backgroundStyle,
     watermark: options.watermark ?? config.watermark,
-    language: detectLanguage(input, options.language),
+    language,
     title: inputData.title ? basename(inputData.title) : undefined
   });
 
-  console.log(`Rendered ${outputFile}`);
+  return {
+    input,
+    outputFile,
+    format,
+    theme,
+    language
+  };
 }

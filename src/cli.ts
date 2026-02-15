@@ -10,6 +10,7 @@ import { runThemesList, runThemesPreview } from './commands/themes.ts';
 import { runWatch } from './commands/watch.ts';
 import type { BackgroundStyle, OutputFormat } from './types.ts';
 import { printError } from './utils/errors.ts';
+import { printJson, writeJsonFile } from './utils/report.ts';
 
 const program = new Command();
 
@@ -32,8 +33,9 @@ program
   .option('--language <language>', 'Language hint (or auto)')
   .option('--stdin', 'Read code from stdin')
   .option('--code <code>', 'Inline code')
+  .option('--json', 'Print machine-readable JSON result')
   .action(async (input: string | undefined, options) => {
-    await runRender(input, {
+    const result = await runRender(input, {
       output: options.output,
       format: options.format as OutputFormat | undefined,
       theme: options.theme,
@@ -49,6 +51,13 @@ program
       stdin: options.stdin,
       code: options.code
     });
+
+    if (options.json) {
+      printJson(result);
+      return;
+    }
+
+    console.log(`Rendered ${result.outputFile}`);
   });
 
 program
@@ -63,8 +72,10 @@ program
   .option('--background-style <style>', 'Background style: solid|gradient')
   .option('--watermark <text>', 'Add watermark text')
   .option('--language <language>', 'Language hint (or auto)')
+  .option('--json', 'Print machine-readable JSON result')
+  .option('--manifest <file>', 'Write JSON manifest to file')
   .action(async (glob: string, options) => {
-    await runBatch(glob, {
+    const results = await runBatch(glob, {
       outDir: options.outDir,
       format: options.format as OutputFormat | undefined,
       theme: options.theme,
@@ -75,6 +86,22 @@ program
       watermark: options.watermark,
       language: options.language
     });
+
+    if (options.manifest) {
+      await writeJsonFile(options.manifest, {
+        count: results.length,
+        files: results
+      });
+    }
+
+    if (options.json) {
+      printJson({ count: results.length, files: results });
+      return;
+    }
+
+    for (const result of results) {
+      console.log(`Rendered ${result.outputFile}`);
+    }
   });
 
 program
