@@ -52,29 +52,34 @@ Build a fully fledged, scriptable CLI alternative to [carbon-app/carbon](https:/
 
 ## Technical Architecture
 
-### 1) Core Rendering Engine
-- `@snipgrapher/core`: render pipeline
-- `@snipgrapher/theme`: theme + token mapping
-- `@snipgrapher/layout`: code frame/window/background/layout logic
-- `@snipgrapher/export`: raster/vector exporters
+### Single Package Layout (`pkg/cli`)
+- Keep everything in one package: `pkg/cli`
+- Internal modules under `pkg/cli/src/`:
+  - `render/` (pipeline + exporters)
+  - `theme/` (themes + token mapping)
+  - `layout/` (frame/window/background)
+  - `commands/` (CLI subcommands)
+  - `config/` (schema, loading, validation)
+- No workspace/monorepo split until proven necessary
 
-### 2) Syntax Highlighting Layer
+### Syntax Highlighting Layer
 - Start with Shiki-compatible tokenization for high language coverage
 - Token cache and theme cache for performance
 - Fallback language detection heuristics
 
-### 3) Rendering Backend
+### Rendering Backend
 - Evaluate options:
   - **Satori + Resvg** (deterministic SVG/PNG, server-friendly)
   - **Headless browser** fallback path for edge typography
-- Keep backend abstracted behind an interface for pluggability
+- Keep backend abstracted behind an internal interface for pluggability
 
-### 4) CLI App
-- `@snipgrapher/cli` with subcommands and shared options
+### CLI App
+- One distributable npm package from `pkg/cli`
+- Subcommands and shared options in the same codebase
 - Rich terminal output (spinners, progress, errors)
 - Strict exit codes for CI reliability
 
-### 5) Performance & Reliability
+### Performance & Reliability
 - Worker pool for batch rendering
 - Caching for tokenization/fonts/templates
 - Snapshot tests for rendering regressions
@@ -83,7 +88,7 @@ Build a fully fledged, scriptable CLI alternative to [carbon-app/carbon](https:/
 ## Phased Delivery
 
 ### Phase 0 — Foundation (Week 1)
-- Initialize monorepo/package layout
+- Initialize single-package layout under `pkg/cli`
 - Define command surface and config schema
 - Implement `doctor` and `init` commands
 - Set up lint, format, test, typecheck, CI
@@ -114,7 +119,7 @@ Build a fully fledged, scriptable CLI alternative to [carbon-app/carbon](https:/
 
 ### Phase 5 — Public OSS Launch (when ready)
 - Switch repo visibility to public
-- Publish npm packages
+- Publish npm package (`snipgrapher`) from `pkg/cli`
 - Add contribution guide + code of conduct
 - Announce roadmap and first stable release
 
