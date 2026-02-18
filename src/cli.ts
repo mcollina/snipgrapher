@@ -12,7 +12,11 @@ import type { BackgroundStyle, OutputFormat } from './types.ts';
 import { printError } from './utils/errors.ts';
 import { printJson, writeJsonFile } from './utils/report.ts';
 
-function optionalBoolean(command: Command, name: string, value: boolean | undefined): boolean | undefined {
+function optionalBoolean(
+  command: Command,
+  name: string,
+  value: boolean | undefined
+): boolean | undefined {
   return command.getOptionValueSource(name) === 'default' ? undefined : value;
 }
 

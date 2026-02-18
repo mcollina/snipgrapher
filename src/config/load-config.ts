@@ -81,7 +81,10 @@ function parseConfig(raw: string, path: string): SnipgrapherConfigFile {
   }
 }
 
-export async function loadConfig(cwd = process.cwd(), profile?: string): Promise<SnipgrapherConfig> {
+export async function loadConfig(
+  cwd = process.cwd(),
+  profile?: string
+): Promise<SnipgrapherConfig> {
   const configPath = await findConfigPath(cwd);
 
   if (!configPath) {

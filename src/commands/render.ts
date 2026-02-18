@@ -1,6 +1,7 @@
 import { basename } from 'node:path';
 
 import { loadConfig } from '../config/load-config.ts';
+import { loadEnvConfig } from '../config/env.ts';
 import { renderToFile } from '../render/pipeline.ts';
 import type { BackgroundStyle, OutputFormat, RenderResult } from '../types.ts';
 import { resolveCodeInput } from '../utils/input.ts';
@@ -29,16 +30,22 @@ export async function runRender(
   input: string | undefined,
   options: RenderCommandOptions
 ): Promise<RenderResult> {
-  const config = await loadConfig(process.cwd(), options.profile);
+  const envConfig = loadEnvConfig();
+  const config = await loadConfig(process.cwd(), options.profile ?? envConfig.profile);
+  const effectiveConfig = {
+    ...config,
+    ...envConfig.overrides
+  };
+
   const inputData = await resolveCodeInput({
     input,
     stdin: options.stdin,
     code: options.code
   });
 
-  const outputFile = options.output ?? `snippet.${options.format ?? config.format}`;
-  const format = options.format ?? inferFormat(outputFile, config.format);
-  const theme = options.theme ?? config.theme;
+  const outputFile = options.output ?? `snippet.${options.format ?? effectiveConfig.format}`;
+  const format = options.format ?? inferFormat(outputFile, effectiveConfig.format);
+  const theme = options.theme ?? effectiveConfig.theme;
   const language = detectLanguage(input, options.language);
 
   await renderToFile({
@@ -46,14 +53,14 @@ export async function runRender(
     outputFile,
     format,
     theme,
-    fontFamily: options.fontFamily ?? config.fontFamily,
-    fontSize: options.fontSize ?? config.fontSize,
-    padding: options.padding ?? config.padding,
-    lineNumbers: options.lineNumbers ?? config.lineNumbers,
-    windowControls: options.windowControls ?? config.windowControls,
-    shadow: options.shadow ?? config.shadow,
-    backgroundStyle: options.backgroundStyle ?? config.backgroundStyle,
-    watermark: options.watermark ?? config.watermark,
+    fontFamily: options.fontFamily ?? effectiveConfig.fontFamily,
+    fontSize: options.fontSize ?? effectiveConfig.fontSize,
+    padding: options.padding ?? effectiveConfig.padding,
+    lineNumbers: options.lineNumbers ?? effectiveConfig.lineNumbers,
+    windowControls: options.windowControls ?? effectiveConfig.windowControls,
+    shadow: options.shadow ?? effectiveConfig.shadow,
+    backgroundStyle: options.backgroundStyle ?? effectiveConfig.backgroundStyle,
+    watermark: options.watermark ?? effectiveConfig.watermark,
     language,
     title: inputData.title ? basename(inputData.title) : undefined
   });

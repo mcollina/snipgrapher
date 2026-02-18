@@ -13,11 +13,20 @@ function isString(value: unknown): value is string {
 }
 
 export function validateConfig(config: Partial<SnipgrapherConfig>, label = 'config'): void {
-  if (config.format && config.format !== 'svg' && config.format !== 'png' && config.format !== 'webp') {
+  if (
+    config.format &&
+    config.format !== 'svg' &&
+    config.format !== 'png' &&
+    config.format !== 'webp'
+  ) {
     throw new Error(`Invalid ${label}: 'format' must be 'svg', 'png', or 'webp'`);
   }
 
-  if (config.backgroundStyle && config.backgroundStyle !== 'solid' && config.backgroundStyle !== 'gradient') {
+  if (
+    config.backgroundStyle &&
+    config.backgroundStyle !== 'solid' &&
+    config.backgroundStyle !== 'gradient'
+  ) {
     throw new Error(`Invalid ${label}: 'backgroundStyle' must be 'solid' or 'gradient'`);
   }
 
@@ -29,11 +38,17 @@ export function validateConfig(config: Partial<SnipgrapherConfig>, label = 'conf
     throw new Error(`Invalid ${label}: 'fontFamily' must be a string`);
   }
 
-  if (config.fontSize !== undefined && (!isNumber(config.fontSize) || config.fontSize < 8 || config.fontSize > 64)) {
+  if (
+    config.fontSize !== undefined &&
+    (!isNumber(config.fontSize) || config.fontSize < 8 || config.fontSize > 64)
+  ) {
     throw new Error(`Invalid ${label}: 'fontSize' must be a number between 8 and 64`);
   }
 
-  if (config.padding !== undefined && (!isNumber(config.padding) || config.padding < 0 || config.padding > 256)) {
+  if (
+    config.padding !== undefined &&
+    (!isNumber(config.padding) || config.padding < 0 || config.padding > 256)
+  ) {
     throw new Error(`Invalid ${label}: 'padding' must be a number between 0 and 256`);
   }
 

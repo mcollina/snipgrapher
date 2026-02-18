@@ -44,13 +44,7 @@ test('loadConfig reads yaml config', async () => {
   try {
     await writeFile(
       join(dir, 'snipgrapher.config.yaml'),
-      [
-        'theme: githubDark',
-        'format: webp',
-        'profiles:',
-        '  social:',
-        '    padding: 50'
-      ].join('\n')
+      ['theme: githubDark', 'format: webp', 'profiles:', '  social:', '    padding: 50'].join('\n')
     );
 
     const config = await loadConfig(dir, 'social');
@@ -67,7 +61,10 @@ test('loadConfig throws on unknown explicit profile', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'snipgrapher-config-'));
 
   try {
-    await writeFile(join(dir, 'snipgrapher.config.json'), JSON.stringify({ theme: 'dracula' }, null, 2));
+    await writeFile(
+      join(dir, 'snipgrapher.config.json'),
+      JSON.stringify({ theme: 'dracula' }, null, 2)
+    );
 
     await assert.rejects(() => loadConfig(dir, 'missing'), /unknown profile/);
   } finally {

@@ -29,6 +29,7 @@ snipgrapher init
 ## Config
 
 Supported config files (first match wins):
+
 - `snipgrapher.config.json`
 - `snipgrapher.config.yaml`
 - `snipgrapher.config.yml`
@@ -61,3 +62,21 @@ Example (`snipgrapher.config.json`):
 ```
 
 Invalid config values are rejected with actionable validation errors.
+
+## Environment variables
+
+You can override config via `SNIPGRAPHER_*` environment variables:
+
+- `SNIPGRAPHER_PROFILE`
+- `SNIPGRAPHER_THEME`
+- `SNIPGRAPHER_FORMAT` (`svg|png|webp`)
+- `SNIPGRAPHER_FONT_FAMILY`
+- `SNIPGRAPHER_FONT_SIZE`
+- `SNIPGRAPHER_PADDING`
+- `SNIPGRAPHER_LINE_NUMBERS` (`true|false`)
+- `SNIPGRAPHER_WINDOW_CONTROLS` (`true|false`)
+- `SNIPGRAPHER_SHADOW` (`true|false`)
+- `SNIPGRAPHER_BACKGROUND_STYLE` (`solid|gradient`)
+- `SNIPGRAPHER_WATERMARK`
+
+Precedence is: **CLI flags > environment variables > config file > defaults**.

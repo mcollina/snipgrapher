@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import chokidar from 'chokidar';
 
 import { loadConfig } from '../config/load-config.ts';
+import { loadEnvConfig } from '../config/env.ts';
 import { renderToFile } from '../render/pipeline.ts';
 import type { BackgroundStyle, OutputFormat } from '../types.ts';
 import { detectLanguage } from '../utils/language.ts';
@@ -22,9 +23,15 @@ export interface WatchCommandOptions {
 }
 
 export async function runWatch(input: string, options: WatchCommandOptions): Promise<void> {
-  const config = await loadConfig(process.cwd(), options.profile);
-  const outputFile = options.output ?? `snippet.${options.format ?? config.format}`;
-  const format = options.format ?? inferFormat(outputFile, config.format);
+  const envConfig = loadEnvConfig();
+  const config = await loadConfig(process.cwd(), options.profile ?? envConfig.profile);
+  const effectiveConfig = {
+    ...config,
+    ...envConfig.overrides
+  };
+
+  const outputFile = options.output ?? `snippet.${options.format ?? effectiveConfig.format}`;
+  const format = options.format ?? inferFormat(outputFile, effectiveConfig.format);
 
   const render = async (): Promise<void> => {
     const code = await readFile(input, 'utf8');
@@ -33,15 +40,15 @@ export async function runWatch(input: string, options: WatchCommandOptions): Pro
       code,
       outputFile,
       format,
-      theme: options.theme ?? config.theme,
-      fontFamily: config.fontFamily,
-      fontSize: config.fontSize,
-      padding: config.padding,
-      lineNumbers: options.lineNumbers ?? config.lineNumbers,
-      windowControls: options.windowControls ?? config.windowControls,
-      shadow: options.shadow ?? config.shadow,
-      backgroundStyle: options.backgroundStyle ?? config.backgroundStyle,
-      watermark: options.watermark ?? config.watermark,
+      theme: options.theme ?? effectiveConfig.theme,
+      fontFamily: effectiveConfig.fontFamily,
+      fontSize: effectiveConfig.fontSize,
+      padding: effectiveConfig.padding,
+      lineNumbers: options.lineNumbers ?? effectiveConfig.lineNumbers,
+      windowControls: options.windowControls ?? effectiveConfig.windowControls,
+      shadow: options.shadow ?? effectiveConfig.shadow,
+      backgroundStyle: options.backgroundStyle ?? effectiveConfig.backgroundStyle,
+      watermark: options.watermark ?? effectiveConfig.watermark,
       language: detectLanguage(input, options.language),
       title: input
     });

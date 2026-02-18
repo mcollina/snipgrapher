@@ -5,17 +5,13 @@ export interface Segment {
   color: string;
 }
 
-const KEYWORDS = /\b(await|async|break|case|catch|class|const|continue|default|else|export|extends|finally|for|function|if|import|let|new|return|switch|throw|try|while|yield|interface|type|implements)\b/g;
+const KEYWORDS =
+  /\b(await|async|break|case|catch|class|const|continue|default|else|export|extends|finally|for|function|if|import|let|new|return|switch|throw|try|while|yield|interface|type|implements)\b/g;
 const STRINGS = /(['"`])(?:\\.|(?!\1).)*\1/g;
 const COMMENTS = /(\/\/.*$|\/\*[\s\S]*?\*\/)/gm;
 const NUMBERS = /\b\d+(?:\.\d+)?\b/g;
 
-function applyRegex(
-  line: string,
-  regex: RegExp,
-  color: string,
-  slots: Array<string | null>
-): void {
+function applyRegex(line: string, regex: RegExp, color: string, slots: Array<string | null>): void {
   for (const match of line.matchAll(regex)) {
     const start = match.index ?? 0;
     const text = match[0];
@@ -61,5 +57,8 @@ export function colorizeLine(line: string, theme: Theme): Segment[] {
 }
 
 export function colorizeCode(code: string, theme: Theme): Segment[][] {
-  return code.replaceAll('\t', '  ').split('\n').map((line) => colorizeLine(line, theme));
+  return code
+    .replaceAll('\t', '  ')
+    .split('\n')
+    .map((line) => colorizeLine(line, theme));
 }

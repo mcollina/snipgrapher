@@ -4,6 +4,7 @@ import { basename, join } from 'node:path';
 import fg from 'fast-glob';
 
 import { loadConfig } from '../config/load-config.ts';
+import { loadEnvConfig } from '../config/env.ts';
 import { renderToFile } from '../render/pipeline.ts';
 import type { BackgroundStyle, OutputFormat, RenderResult } from '../types.ts';
 import { detectLanguage } from '../utils/language.ts';
@@ -22,8 +23,17 @@ export interface BatchCommandOptions {
   concurrency?: number;
 }
 
-export async function runBatch(pattern: string, options: BatchCommandOptions): Promise<RenderResult[]> {
-  const config = await loadConfig(process.cwd(), options.profile);
+export async function runBatch(
+  pattern: string,
+  options: BatchCommandOptions
+): Promise<RenderResult[]> {
+  const envConfig = loadEnvConfig();
+  const config = await loadConfig(process.cwd(), options.profile ?? envConfig.profile);
+  const effectiveConfig = {
+    ...config,
+    ...envConfig.overrides
+  };
+
   const files = await fg(pattern, { onlyFiles: true, unique: true, dot: false });
 
   if (files.length === 0) {
@@ -31,8 +41,8 @@ export async function runBatch(pattern: string, options: BatchCommandOptions): P
   }
 
   const outDir = options.outDir ?? 'snippets';
-  const format = options.format ?? config.format;
-  const theme = options.theme ?? config.theme;
+  const format = options.format ?? effectiveConfig.format;
+  const theme = options.theme ?? effectiveConfig.theme;
   const concurrency = Math.max(1, Math.min(options.concurrency ?? 4, 32));
 
   const results: RenderResult[] = new Array(files.length);
@@ -56,14 +66,14 @@ export async function runBatch(pattern: string, options: BatchCommandOptions): P
         outputFile,
         format,
         theme,
-        fontFamily: config.fontFamily,
-        fontSize: config.fontSize,
-        padding: config.padding,
-        lineNumbers: options.lineNumbers ?? config.lineNumbers,
-        windowControls: options.windowControls ?? config.windowControls,
-        shadow: options.shadow ?? config.shadow,
-        backgroundStyle: options.backgroundStyle ?? config.backgroundStyle,
-        watermark: options.watermark ?? config.watermark,
+        fontFamily: effectiveConfig.fontFamily,
+        fontSize: effectiveConfig.fontSize,
+        padding: effectiveConfig.padding,
+        lineNumbers: options.lineNumbers ?? effectiveConfig.lineNumbers,
+        windowControls: options.windowControls ?? effectiveConfig.windowControls,
+        shadow: options.shadow ?? effectiveConfig.shadow,
+        backgroundStyle: options.backgroundStyle ?? effectiveConfig.backgroundStyle,
+        watermark: options.watermark ?? effectiveConfig.watermark,
         language,
         title: file
       });

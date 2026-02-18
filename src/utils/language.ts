@@ -18,7 +18,10 @@ const EXT_TO_LANGUAGE: Record<string, string> = {
   '.go': 'go'
 };
 
-export function detectLanguage(input: string | undefined, explicitLanguage?: string): string | undefined {
+export function detectLanguage(
+  input: string | undefined,
+  explicitLanguage?: string
+): string | undefined {
   if (explicitLanguage && explicitLanguage !== 'auto') {
     return explicitLanguage;
   }

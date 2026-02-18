@@ -16,9 +16,8 @@ function withOpacity(hex: string, alphaHex: string): string {
     return hex;
   }
 
-  const normalized = hex.length === 4
-    ? `#${hex[1]}${hex[1]}${hex[2]}${hex[2]}${hex[3]}${hex[3]}`
-    : hex;
+  const normalized =
+    hex.length === 4 ? `#${hex[1]}${hex[1]}${hex[2]}${hex[2]}${hex[3]}${hex[3]}` : hex;
 
   return `${normalized}${alphaHex}`;
 }
@@ -41,7 +40,8 @@ export async function renderSvg(options: RenderOptions): Promise<string> {
   const contentHeight = lines.length * lineHeight;
   const height = options.padding * 2 + headerHeight + contentHeight + footerHeight;
 
-  const backgroundFill = options.backgroundStyle === 'gradient' ? 'url(#bgGradient)' : theme.background;
+  const backgroundFill =
+    options.backgroundStyle === 'gradient' ? 'url(#bgGradient)' : theme.background;
   const cardY = options.shadow ? 10 : 0;
 
   let y = options.padding + headerHeight + cardY;
@@ -80,14 +80,15 @@ export async function renderSvg(options: RenderOptions): Promise<string> {
     ? `<text x="${width - options.padding}" y="${height - options.padding / 2}" text-anchor="end" fill="${theme.comment}">${escapeXml(options.watermark)}</text>`
     : '';
 
-  const defs = options.backgroundStyle === 'gradient'
-    ? `<defs>
+  const defs =
+    options.backgroundStyle === 'gradient'
+      ? `<defs>
         <linearGradient id="bgGradient" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stop-color="${withOpacity(theme.background, 'FF')}" />
           <stop offset="100%" stop-color="${withOpacity(theme.background, 'CC')}" />
         </linearGradient>
       </defs>`
-    : '';
+      : '';
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height + cardY}" viewBox="0 0 ${width} ${height + cardY}">
