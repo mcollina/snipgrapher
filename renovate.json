@@ -1,41 +1,22 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
-  ],
-  "labels": [
-    "dependencies"
-  ],
+  "extends": ["config:recommended"],
+  "labels": ["dependencies"],
   "packageRules": [
     {
-      "matchUpdateTypes": [
-        "minor"
-      ],
-      "addLabels": [
-        "semver:minor"
-      ],
+      "matchUpdateTypes": ["minor"],
+      "addLabels": ["semver:minor"],
       "automerge": true,
       "platformAutomerge": true,
       "automergeType": "pr"
     },
     {
-      "matchUpdateTypes": [
-        "patch",
-        "pin",
-        "digest"
-      ],
-      "addLabels": [
-        "semver:patch"
-      ]
+      "matchUpdateTypes": ["patch", "pin", "digest"],
+      "addLabels": ["semver:patch"]
     },
     {
-      "matchUpdateTypes": [
-        "major"
-      ],
-      "addLabels": [
-        "semver:major",
-        "needs-manual-review"
-      ],
+      "matchUpdateTypes": ["major"],
+      "addLabels": ["semver:major", "needs-manual-review"],
       "automerge": false
     }
   ],
