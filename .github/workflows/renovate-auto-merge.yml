@@ -1,0 +1,64 @@
+name: Renovate Auto Merge
+
+on:
+  workflow_run:
+    workflows:
+      - CI
+    types:
+      - completed
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  merge-minor-updates:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Merge Renovate semver:minor PRs for this run
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prs = context.payload.workflow_run.pull_requests || []
+
+            if (prs.length === 0) {
+              core.info('No PR associated with this workflow run.')
+              return
+            }
+
+            for (const prRef of prs) {
+              const { data: pr } = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prRef.number
+              })
+
+              const labels = pr.labels.map((l) => l.name)
+              const isRenovate = pr.user?.login === 'renovate[bot]'
+              const isMinor = labels.includes('semver:minor')
+
+              if (!isRenovate || !isMinor) {
+                core.info(`Skipping PR #${pr.number} (renovate=${isRenovate}, minor=${isMinor})`)
+                continue
+              }
+
+              if (pr.state !== 'open' || pr.draft) {
+                core.info(`Skipping PR #${pr.number} (state=${pr.state}, draft=${pr.draft})`)
+                continue
+              }
+
+              try {
+                await github.rest.pulls.merge({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: pr.number,
+                  merge_method: 'squash'
+                })
+                core.info(`Merged Renovate minor PR #${pr.number}`)
+              } catch (error) {
+                core.warning(`Could not merge PR #${pr.number}: ${error.message}`)
+                throw error
+              }
+            }
