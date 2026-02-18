@@ -24,6 +24,7 @@ snipgrapher watch src/index.ts -o snippet.svg --profile social
 snipgrapher themes list
 snipgrapher doctor
 snipgrapher init
+npm run bench
 ```
 
 ## Config
@@ -80,3 +81,19 @@ You can override config via `SNIPGRAPHER_*` environment variables:
 - `SNIPGRAPHER_WATERMARK`
 
 Precedence is: **CLI flags > environment variables > config file > defaults**.
+
+## Quality checks
+
+```bash
+npm run lint
+npm run format:check
+npm run typecheck
+npm test
+npm run bench
+```
+
+## Project policies
+
+- Contribution guide: `CONTRIBUTING.md`
+- Code of conduct: `CODE_OF_CONDUCT.md`
+- CLI compatibility policy: `BACKWARD_COMPATIBILITY.md`

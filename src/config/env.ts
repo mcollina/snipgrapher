@@ -49,10 +49,16 @@ function readEnum<T extends string>(
   throw new Error(`Invalid environment variable ${name}: expected one of ${allowed.join(', ')}`);
 }
 
+function definedOnly<T extends Record<string, unknown>>(input: T): Partial<T> {
+  return Object.fromEntries(
+    Object.entries(input).filter(([, value]) => value !== undefined)
+  ) as Partial<T>;
+}
+
 export function loadEnvConfig(env: NodeJS.ProcessEnv = process.env): EnvConfigResult {
   const profile = readString(env, 'SNIPGRAPHER_PROFILE');
 
-  const overrides: Partial<SnipgrapherConfig> = {
+  const overrides = definedOnly<Partial<SnipgrapherConfig>>({
     theme: readString(env, 'SNIPGRAPHER_THEME'),
     fontFamily: readString(env, 'SNIPGRAPHER_FONT_FAMILY'),
     fontSize: readNumber(env, 'SNIPGRAPHER_FONT_SIZE'),
@@ -66,7 +72,7 @@ export function loadEnvConfig(env: NodeJS.ProcessEnv = process.env): EnvConfigRe
     ]),
     watermark: readString(env, 'SNIPGRAPHER_WATERMARK'),
     format: readEnum<OutputFormat>(env, 'SNIPGRAPHER_FORMAT', ['svg', 'png', 'webp'])
-  };
+  });
 
   validateConfig(overrides, 'environment');
 

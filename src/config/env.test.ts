@@ -27,3 +27,8 @@ test('loadEnvConfig reads profile', () => {
   const result = loadEnvConfig({ SNIPGRAPHER_PROFILE: 'social' });
   assert.equal(result.profile, 'social');
 });
+
+test('loadEnvConfig does not emit undefined keys', () => {
+  const result = loadEnvConfig({});
+  assert.deepEqual(result.overrides, {});
+});
