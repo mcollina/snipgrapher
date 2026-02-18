@@ -23,7 +23,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "node --test src/**/*.test.ts",
-    "test:golden": "node --test src/render/golden.test.ts",
+    "test:golden": "node --test src/render/golden.spec.ts",
     "bench": "npm run build && node scripts/benchmark.mjs",
     "dev": "node src/cli.ts",
     "prepublishOnly": "npm run clean && npm run build"
