@@ -37,6 +37,7 @@ program
   .option('--window-controls', 'Enable macOS-style traffic lights')
   .option('--shadow', 'Enable card shadow')
   .option('--background-style <style>', 'Background style: solid|gradient')
+  .option('--scale <factor>', 'PNG render scale (1-4, default: 2)', Number)
   .option('--watermark <text>', 'Add watermark text')
   .option('--language <language>', 'Language hint (or auto)')
   .option('--profile <name>', 'Config profile name')
@@ -55,6 +56,7 @@ program
       windowControls: optionalBoolean(command, 'windowControls', options.windowControls),
       shadow: optionalBoolean(command, 'shadow', options.shadow),
       backgroundStyle: options.backgroundStyle as BackgroundStyle | undefined,
+      scale: options.scale,
       watermark: options.watermark,
       language: options.language,
       profile: options.profile,
@@ -80,6 +82,7 @@ program
   .option('--window-controls', 'Enable macOS-style traffic lights')
   .option('--shadow', 'Enable card shadow')
   .option('--background-style <style>', 'Background style: solid|gradient')
+  .option('--scale <factor>', 'PNG render scale (1-4, default: 2)', Number)
   .option('--watermark <text>', 'Add watermark text')
   .option('--language <language>', 'Language hint (or auto)')
   .option('--profile <name>', 'Config profile name')
@@ -95,6 +98,7 @@ program
       windowControls: optionalBoolean(command, 'windowControls', options.windowControls),
       shadow: optionalBoolean(command, 'shadow', options.shadow),
       backgroundStyle: options.backgroundStyle as BackgroundStyle | undefined,
+      scale: options.scale,
       watermark: options.watermark,
       language: options.language,
       profile: options.profile,
@@ -128,6 +132,7 @@ program
   .option('--window-controls', 'Enable macOS-style traffic lights')
   .option('--shadow', 'Enable card shadow')
   .option('--background-style <style>', 'Background style: solid|gradient')
+  .option('--scale <factor>', 'PNG render scale (1-4, default: 2)', Number)
   .option('--watermark <text>', 'Add watermark text')
   .option('--language <language>', 'Language hint (or auto)')
   .option('--profile <name>', 'Config profile name')
@@ -140,6 +145,7 @@ program
       windowControls: optionalBoolean(command, 'windowControls', options.windowControls),
       shadow: optionalBoolean(command, 'shadow', options.shadow),
       backgroundStyle: options.backgroundStyle as BackgroundStyle | undefined,
+      scale: options.scale,
       watermark: options.watermark,
       language: options.language,
       profile: options.profile

@@ -13,7 +13,8 @@ const baseOptions = {
   lineNumbers: false,
   windowControls: true,
   shadow: true,
-  backgroundStyle: 'gradient' as const
+  backgroundStyle: 'gradient' as const,
+  scale: 2
 };
 
 test('renderSvg escapes XML special chars', async () => {

@@ -25,6 +25,7 @@ function pickRootConfig(config: SnipgrapherConfigFile): Partial<SnipgrapherConfi
     windowControls,
     shadow,
     backgroundStyle,
+    scale,
     watermark,
     format
   } = config;
@@ -38,6 +39,7 @@ function pickRootConfig(config: SnipgrapherConfigFile): Partial<SnipgrapherConfi
     windowControls,
     shadow,
     backgroundStyle,
+    scale,
     watermark,
     format
   };

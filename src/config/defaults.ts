@@ -9,6 +9,7 @@ export const defaultConfig: SnipgrapherConfig = {
   windowControls: true,
   shadow: true,
   backgroundStyle: 'gradient',
+  scale: 2,
   watermark: '',
   format: 'svg'
 };

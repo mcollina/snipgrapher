@@ -24,6 +24,7 @@ export interface RenderOptions {
   windowControls: boolean;
   shadow: boolean;
   backgroundStyle: BackgroundStyle;
+  scale: number;
   watermark?: string;
   language?: string;
   title?: string;
@@ -38,6 +39,7 @@ export interface SnipgrapherConfig {
   windowControls: boolean;
   shadow: boolean;
   backgroundStyle: BackgroundStyle;
+  scale: number;
   watermark?: string;
   format: OutputFormat;
 }

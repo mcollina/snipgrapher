@@ -17,7 +17,7 @@ export async function renderToFile(options: RenderOptions): Promise<void> {
   }
 
   if (options.format === 'png') {
-    const png = svgToPng(svg);
+    const png = svgToPng(svg, options.scale);
     await writeFile(options.outputFile, png);
     return;
   }

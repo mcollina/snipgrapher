@@ -70,6 +70,7 @@ export function loadEnvConfig(env: NodeJS.ProcessEnv = process.env): EnvConfigRe
       'solid',
       'gradient'
     ]),
+    scale: readNumber(env, 'SNIPGRAPHER_SCALE'),
     watermark: readString(env, 'SNIPGRAPHER_WATERMARK'),
     format: readEnum<OutputFormat>(env, 'SNIPGRAPHER_FORMAT', ['svg', 'png', 'webp'])
   });

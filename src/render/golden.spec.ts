@@ -24,6 +24,7 @@ test('golden: typescript render stays stable', async () => {
     windowControls: true,
     shadow: true,
     backgroundStyle: 'gradient',
+    scale: 2,
     watermark: 'snipgrapher',
     language: 'typescript',
     title: 'hello.ts'

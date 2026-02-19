@@ -24,3 +24,17 @@ test('validateConfig rejects invalid format', () => {
 test('validateConfig rejects invalid font size', () => {
   assert.throws(() => validateConfig({ fontSize: 200 }), /fontSize/);
 });
+
+test('validateConfig accepts valid scale', () => {
+  assert.doesNotThrow(() => validateConfig({ scale: 1 }));
+  assert.doesNotThrow(() => validateConfig({ scale: 2 }));
+  assert.doesNotThrow(() => validateConfig({ scale: 4 }));
+});
+
+test('validateConfig rejects scale below 1', () => {
+  assert.throws(() => validateConfig({ scale: 0 }), /scale/);
+});
+
+test('validateConfig rejects scale above 4', () => {
+  assert.throws(() => validateConfig({ scale: 5 }), /scale/);
+});

@@ -1,9 +1,10 @@
 import { Resvg } from '@resvg/resvg-js';
 
-export function svgToPng(svg: string): Buffer {
+export function svgToPng(svg: string, scale = 2): Buffer {
   const resvg = new Resvg(svg, {
     fitTo: {
-      mode: 'original'
+      mode: 'zoom',
+      value: scale
     }
   });
 

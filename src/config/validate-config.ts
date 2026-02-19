@@ -64,6 +64,13 @@ export function validateConfig(config: Partial<SnipgrapherConfig>, label = 'conf
     throw new Error(`Invalid ${label}: 'shadow' must be a boolean`);
   }
 
+  if (
+    config.scale !== undefined &&
+    (!isNumber(config.scale) || config.scale < 1 || config.scale > 4)
+  ) {
+    throw new Error(`Invalid ${label}: 'scale' must be a number between 1 and 4`);
+  }
+
   if (config.watermark !== undefined && !isString(config.watermark)) {
     throw new Error(`Invalid ${label}: 'watermark' must be a string`);
   }

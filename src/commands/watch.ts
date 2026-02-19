@@ -17,6 +17,7 @@ export interface WatchCommandOptions {
   windowControls?: boolean;
   shadow?: boolean;
   backgroundStyle?: BackgroundStyle;
+  scale?: number;
   watermark?: string;
   language?: string;
   profile?: string;
@@ -48,6 +49,7 @@ export async function runWatch(input: string, options: WatchCommandOptions): Pro
       windowControls: options.windowControls ?? effectiveConfig.windowControls,
       shadow: options.shadow ?? effectiveConfig.shadow,
       backgroundStyle: options.backgroundStyle ?? effectiveConfig.backgroundStyle,
+      scale: options.scale ?? effectiveConfig.scale,
       watermark: options.watermark ?? effectiveConfig.watermark,
       language: detectLanguage(input, options.language),
       title: input
