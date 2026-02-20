@@ -10,6 +10,10 @@ export async function readStdin(): Promise<string> {
   return Buffer.concat(chunks).toString('utf8');
 }
 
+export function shouldUseStdin(args: { input?: string; stdin?: boolean; code?: string }): boolean {
+  return Boolean(args.stdin || (!args.code && !args.input && !process.stdin.isTTY));
+}
+
 export async function resolveCodeInput(args: {
   input?: string;
   stdin?: boolean;
@@ -19,12 +23,12 @@ export async function resolveCodeInput(args: {
     return { code: args.code, title: 'inline input' };
   }
 
-  if (args.stdin) {
+  if (shouldUseStdin(args)) {
     return { code: await readStdin(), title: 'stdin' };
   }
 
   if (!args.input) {
-    throw new Error('Missing input: provide a file, --stdin, or --code');
+    throw new Error('Missing input: provide a file, pipe to stdin, pass --stdin, or use --code');
   }
 
   return {

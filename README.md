@@ -15,6 +15,7 @@ npm i -g snipgrapher
 snipgrapher render src/index.ts -o snippet.svg
 snipgrapher render src/index.ts -o snippet.webp --format webp
 cat src/index.ts | snipgrapher render --stdin -o snippet.svg
+cat src/index.ts | snipgrapher render -o snippet.svg
 snipgrapher render src/index.ts --background-style gradient --window-controls --shadow
 snipgrapher render src/index.ts --watermark "snipgrapher" --language typescript
 snipgrapher render src/index.ts --profile social --json
