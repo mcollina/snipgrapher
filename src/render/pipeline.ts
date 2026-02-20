@@ -6,22 +6,29 @@ import { svgToPng } from './png.ts';
 import { renderSvg } from './svg.ts';
 import { svgToWebp } from './webp.ts';
 
-export async function renderToFile(options: RenderOptions): Promise<void> {
+export async function render(options: RenderOptions): Promise<string | Buffer> {
   const svg = await renderSvg(options);
 
-  await mkdir(dirname(options.outputFile), { recursive: true });
-
   if (options.format === 'svg') {
-    await writeFile(options.outputFile, svg, 'utf8');
-    return;
+    return svg;
   }
 
   if (options.format === 'png') {
-    const png = svgToPng(svg, options.scale);
-    await writeFile(options.outputFile, png);
+    return svgToPng(svg, options.scale);
+  }
+
+  return svgToWebp(svg);
+}
+
+export async function renderToFile(options: RenderOptions): Promise<void> {
+  const output = await render(options);
+
+  await mkdir(dirname(options.outputFile), { recursive: true });
+
+  if (typeof output === 'string') {
+    await writeFile(options.outputFile, output, 'utf8');
     return;
   }
 
-  const webp = await svgToWebp(svg);
-  await writeFile(options.outputFile, webp);
+  await writeFile(options.outputFile, output);
 }

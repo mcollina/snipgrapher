@@ -45,6 +45,10 @@ program
   .option('--code <code>', 'Inline code')
   .option('--json', 'Print machine-readable JSON result')
   .action(async (input: string | undefined, options, command: Command) => {
+    if (options.json && !options.output && !process.stdout.isTTY) {
+      throw new Error('Cannot combine --json with redirected render output. Use --output to write the image.');
+    }
+
     const result = await runRender(input, {
       output: options.output,
       format: options.format as OutputFormat | undefined,
@@ -69,7 +73,9 @@ program
       return;
     }
 
-    console.log(`Rendered ${result.outputFile}`);
+    if (result.outputFile !== 'stdout') {
+      console.log(`Rendered ${result.outputFile}`);
+    }
   });
 
 program

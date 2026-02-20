@@ -16,6 +16,8 @@ snipgrapher render ./example.ts -o snippet.svg
 snipgrapher render ./example.ts -o snippet.webp --format webp
 cat ./example.ts | snipgrapher render --stdin -o snippet.svg
 cat ./example.ts | snipgrapher render -o snippet.svg
+snipgrapher render ./example.ts > snippet.svg
+snipgrapher render ./example.ts --format png > snippet.png
 snipgrapher render ./example.ts --background-style gradient --window-controls --shadow
 snipgrapher render ./example.ts --watermark "snipgrapher" --language typescript
 snipgrapher render ./example.ts --profile social --json
@@ -26,6 +28,8 @@ snipgrapher themes list
 snipgrapher doctor
 snipgrapher init
 ```
+
+When `--output` is omitted and stdout is redirected (non-TTY), rendered image bytes are written to stdout.
 
 ## Config
 

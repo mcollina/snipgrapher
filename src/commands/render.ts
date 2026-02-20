@@ -2,7 +2,7 @@ import { basename } from 'node:path';
 
 import { loadConfig } from '../config/load-config.ts';
 import { loadEnvConfig } from '../config/env.ts';
-import { renderToFile } from '../render/pipeline.ts';
+import { render, renderToFile } from '../render/pipeline.ts';
 import type { BackgroundStyle, OutputFormat, RenderResult } from '../types.ts';
 import { resolveCodeInput } from '../utils/input.ts';
 import { detectLanguage } from '../utils/language.ts';
@@ -27,6 +27,19 @@ export interface RenderCommandOptions {
   code?: string;
 }
 
+async function writeStdout(output: string | Buffer): Promise<void> {
+  await new Promise<void>((resolve, reject) => {
+    process.stdout.write(output, (error) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+
+      resolve();
+    });
+  });
+}
+
 export async function runRender(
   input: string | undefined,
   options: RenderCommandOptions
@@ -44,12 +57,16 @@ export async function runRender(
     code: options.code
   });
 
-  const outputFile = options.output ?? `snippet.${options.format ?? effectiveConfig.format}`;
-  const format = options.format ?? inferFormat(outputFile, effectiveConfig.format);
+  const writeToStdout = !options.output && !process.stdout.isTTY;
+  const outputFile =
+    options.output ??
+    (writeToStdout ? 'stdout' : `snippet.${options.format ?? effectiveConfig.format}`);
+  const format =
+    options.format ?? (writeToStdout ? effectiveConfig.format : inferFormat(outputFile, effectiveConfig.format));
   const theme = options.theme ?? effectiveConfig.theme;
   const language = detectLanguage(input, options.language);
 
-  await renderToFile({
+  const renderOptions = {
     code: inputData.code,
     outputFile,
     format,
@@ -65,7 +82,14 @@ export async function runRender(
     watermark: options.watermark ?? effectiveConfig.watermark,
     language,
     title: inputData.title ? basename(inputData.title) : undefined
-  });
+  };
+
+  if (writeToStdout) {
+    const output = await render(renderOptions);
+    await writeStdout(output);
+  } else {
+    await renderToFile(renderOptions);
+  }
 
   return {
     input,
