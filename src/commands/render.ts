@@ -22,6 +22,7 @@ export interface RenderCommandOptions {
   scale?: number;
   watermark?: string;
   language?: string;
+  borderRadius?: number;
   profile?: string;
   stdin?: boolean;
   code?: string;
@@ -81,6 +82,7 @@ export async function runRender(
     scale: options.scale ?? effectiveConfig.scale,
     watermark: options.watermark ?? effectiveConfig.watermark,
     language,
+    borderRadius: options.borderRadius ?? effectiveConfig.borderRadius,
     title: inputData.title ? basename(inputData.title) : undefined
   };
 

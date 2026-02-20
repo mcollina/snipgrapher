@@ -20,6 +20,7 @@ export interface WatchCommandOptions {
   scale?: number;
   watermark?: string;
   language?: string;
+  borderRadius?: number;
   profile?: string;
 }
 
@@ -52,6 +53,7 @@ export async function runWatch(input: string, options: WatchCommandOptions): Pro
       scale: options.scale ?? effectiveConfig.scale,
       watermark: options.watermark ?? effectiveConfig.watermark,
       language: detectLanguage(input, options.language),
+      borderRadius: options.borderRadius ?? effectiveConfig.borderRadius,
       title: input
     });
 

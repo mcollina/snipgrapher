@@ -20,6 +20,7 @@ export interface BatchCommandOptions {
   scale?: number;
   watermark?: string;
   language?: string;
+  borderRadius?: number;
   profile?: string;
   concurrency?: number;
 }
@@ -77,6 +78,7 @@ export async function runBatch(
         scale: options.scale ?? effectiveConfig.scale,
         watermark: options.watermark ?? effectiveConfig.watermark,
         language,
+        borderRadius: options.borderRadius ?? effectiveConfig.borderRadius,
         title: file
       });
 

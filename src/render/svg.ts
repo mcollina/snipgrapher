@@ -90,12 +90,14 @@ export async function renderSvg(options: RenderOptions): Promise<string> {
       </defs>`
       : '';
 
+  const borderRadius = options.borderRadius ?? 14;
+
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height + cardY}" viewBox="0 0 ${width} ${height + cardY}">
   ${defs}
-  <rect width="100%" height="100%" fill="${backgroundFill}" rx="14" />
+  <rect width="100%" height="100%" fill="${backgroundFill}" rx="${borderRadius}" />
   <g ${options.shadow ? 'filter="drop-shadow(0 8px 20px rgba(0,0,0,0.28))"' : ''}>
-    <rect x="0" y="${cardY}" width="${width}" height="${height}" fill="${theme.background}" rx="14" />
+    <rect x="0" y="${cardY}" width="${width}" height="${height}" fill="${theme.background}" rx="${borderRadius}" />
   </g>
   <g font-family="${escapeXml(options.fontFamily)}" font-size="${options.fontSize}" xml:space="preserve">
     ${controls}

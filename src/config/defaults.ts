@@ -11,5 +11,6 @@ export const defaultConfig: SnipgrapherConfig = {
   backgroundStyle: 'gradient',
   scale: 2,
   watermark: '',
-  format: 'svg'
+  format: 'svg',
+  borderRadius: 14
 };

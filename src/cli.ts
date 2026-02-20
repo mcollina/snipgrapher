@@ -40,6 +40,7 @@ program
   .option('--scale <factor>', 'PNG render scale (1-4, default: 2)', Number)
   .option('--watermark <text>', 'Add watermark text')
   .option('--language <language>', 'Language hint (or auto)')
+  .option('--border-radius <radius>', 'Border radius (default: 14)', Number)
   .option('--profile <name>', 'Config profile name')
   .option('--stdin', 'Read code from stdin')
   .option('--code <code>', 'Inline code')
@@ -63,6 +64,7 @@ program
       scale: options.scale,
       watermark: options.watermark,
       language: options.language,
+      borderRadius: options.borderRadius,
       profile: options.profile,
       stdin: options.stdin,
       code: options.code
@@ -91,6 +93,7 @@ program
   .option('--scale <factor>', 'PNG render scale (1-4, default: 2)', Number)
   .option('--watermark <text>', 'Add watermark text')
   .option('--language <language>', 'Language hint (or auto)')
+  .option('--border-radius <radius>', 'Border radius (default: 14)', Number)
   .option('--profile <name>', 'Config profile name')
   .option('--concurrency <n>', 'Batch render concurrency (default: 4)', Number)
   .option('--json', 'Print machine-readable JSON result')
@@ -107,6 +110,7 @@ program
       scale: options.scale,
       watermark: options.watermark,
       language: options.language,
+      borderRadius: options.borderRadius,
       profile: options.profile,
       concurrency: options.concurrency
     });
@@ -141,6 +145,7 @@ program
   .option('--scale <factor>', 'PNG render scale (1-4, default: 2)', Number)
   .option('--watermark <text>', 'Add watermark text')
   .option('--language <language>', 'Language hint (or auto)')
+  .option('--border-radius <radius>', 'Border radius (default: 14)', Number)
   .option('--profile <name>', 'Config profile name')
   .action(async (input: string, options, command: Command) => {
     await runWatch(input, {
@@ -154,6 +159,7 @@ program
       scale: options.scale,
       watermark: options.watermark,
       language: options.language,
+      borderRadius: options.borderRadius,
       profile: options.profile
     });
   });
