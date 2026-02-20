@@ -12,20 +12,19 @@ npm i -g snipgrapher
 ## Usage
 
 ```bash
-snipgrapher render src/index.ts -o snippet.svg
-snipgrapher render src/index.ts -o snippet.webp --format webp
-cat src/index.ts | snipgrapher render --stdin -o snippet.svg
-cat src/index.ts | snipgrapher render -o snippet.svg
-snipgrapher render src/index.ts --background-style gradient --window-controls --shadow
-snipgrapher render src/index.ts --watermark "snipgrapher" --language typescript
-snipgrapher render src/index.ts --profile social --json
-snipgrapher batch "src/**/*.ts" --out-dir snippets --concurrency 6
-snipgrapher batch "src/**/*.ts" --json --manifest snippets/manifest.json
-snipgrapher watch src/index.ts -o snippet.svg --profile social
+snipgrapher render ./example.ts -o snippet.svg
+snipgrapher render ./example.ts -o snippet.webp --format webp
+cat ./example.ts | snipgrapher render --stdin -o snippet.svg
+cat ./example.ts | snipgrapher render -o snippet.svg
+snipgrapher render ./example.ts --background-style gradient --window-controls --shadow
+snipgrapher render ./example.ts --watermark "snipgrapher" --language typescript
+snipgrapher render ./example.ts --profile social --json
+snipgrapher batch "./snippets/**/*.ts" --out-dir rendered --concurrency 6
+snipgrapher batch "./snippets/**/*.ts" --json --manifest rendered/manifest.json
+snipgrapher watch ./example.ts -o snippet.svg --profile social
 snipgrapher themes list
 snipgrapher doctor
 snipgrapher init
-npm run bench
 ```
 
 ## Config
