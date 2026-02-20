@@ -31,6 +31,8 @@ snipgrapher init
 
 When `--output` is omitted and stdout is redirected (non-TTY), rendered image bytes are written to stdout.
 
+`snipgrapher init` starts an interactive wizard to generate `snipgrapher.config.json` (requires a TTY).
+
 ## Config
 
 Supported config files (first match wins):
