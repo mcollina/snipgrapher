@@ -27,11 +27,12 @@ snipgrapher watch ./example.ts -o snippet.svg --profile social
 snipgrapher themes list
 snipgrapher doctor
 snipgrapher init
+snipgrapher init --force
 ```
 
 When `--output` is omitted and stdout is redirected (non-TTY), rendered image bytes are written to stdout.
 
-`snipgrapher init` starts an interactive wizard to generate `snipgrapher.config.json` (requires a TTY).
+`snipgrapher init` starts an interactive Inquirer-based wizard with selection prompts to generate `snipgrapher.config.json` (requires a TTY). Use `--force` to overwrite an existing config file.
 
 ## Config
 
