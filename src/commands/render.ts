@@ -62,7 +62,8 @@ export async function runRender(
     options.output ??
     (writeToStdout ? 'stdout' : `snippet.${options.format ?? effectiveConfig.format}`);
   const format =
-    options.format ?? (writeToStdout ? effectiveConfig.format : inferFormat(outputFile, effectiveConfig.format));
+    options.format ??
+    (writeToStdout ? effectiveConfig.format : inferFormat(outputFile, effectiveConfig.format));
   const theme = options.theme ?? effectiveConfig.theme;
   const language = detectLanguage(input, options.language);
 

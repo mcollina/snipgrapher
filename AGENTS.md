@@ -77,4 +77,4 @@ Validation happens in `src/config/validate-config.ts` for config files and env v
   - command names and existing long options,
   - JSON output shape for `--json` / `--manifest`,
   - supported config keys.
-  Treat changes here as breaking unless versioned accordingly.
+    Treat changes here as breaking unless versioned accordingly.

@@ -6,7 +6,12 @@ import inquirer from 'inquirer';
 import { defaultConfig } from '../config/defaults.ts';
 import { validateConfig } from '../config/validate-config.ts';
 import { listThemes } from '../theme/themes.ts';
-import type { BackgroundStyle, OutputFormat, SnipgrapherConfig, SnipgrapherConfigFile } from '../types.ts';
+import type {
+  BackgroundStyle,
+  OutputFormat,
+  SnipgrapherConfig,
+  SnipgrapherConfigFile
+} from '../types.ts';
 
 interface InitWizardAnswers {
   theme: string;
@@ -139,7 +144,10 @@ export interface InitCommandOptions {
   force?: boolean;
 }
 
-export async function runInit(cwd = process.cwd(), options: InitCommandOptions = {}): Promise<void> {
+export async function runInit(
+  cwd = process.cwd(),
+  options: InitCommandOptions = {}
+): Promise<void> {
   const target = resolve(cwd, 'snipgrapher.config.json');
 
   try {
