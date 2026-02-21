@@ -179,9 +179,12 @@ program.command('doctor').action(async () => {
   await runDoctor();
 });
 
-program.command('init').action(async () => {
-  await runInit();
-});
+program
+  .command('init')
+  .option('--force', 'Overwrite existing snipgrapher.config.json')
+  .action(async (options) => {
+    await runInit(process.cwd(), { force: options.force });
+  });
 
 program.parseAsync(process.argv).catch((error) => {
   printError(error);

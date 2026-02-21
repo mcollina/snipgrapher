@@ -29,13 +29,14 @@
     "prepublishOnly": "npm run clean && npm run build"
   },
   "dependencies": {
+    "@iarna/toml": "^2.2.5",
     "@resvg/resvg-js": "^2.6.2",
     "chokidar": "^4.0.3",
     "commander": "^13.1.0",
-    "@iarna/toml": "^2.2.5",
     "fast-glob": "^3.3.3",
-    "shiki": "^3.13.0",
+    "inquirer": "^12.11.1",
     "sharp": "^0.34.4",
+    "shiki": "^3.13.0",
     "yaml": "^2.8.1"
   },
   "devDependencies": {

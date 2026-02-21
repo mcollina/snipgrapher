@@ -1,115 +1,153 @@
 import { access, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { createInterface } from 'node:readline/promises';
+
+import inquirer from 'inquirer';
 
 import { defaultConfig } from '../config/defaults.ts';
 import { validateConfig } from '../config/validate-config.ts';
 import { listThemes } from '../theme/themes.ts';
 import type { BackgroundStyle, OutputFormat, SnipgrapherConfig, SnipgrapherConfigFile } from '../types.ts';
 
-async function askString(
-  ask: (prompt: string) => Promise<string>,
-  label: string,
-  fallback: string
-): Promise<string> {
-  const value = (await ask(`${label} [${fallback}]: `)).trim();
-  return value === '' ? fallback : value;
+interface InitWizardAnswers {
+  theme: string;
+  format: OutputFormat;
+  fontFamily: string;
+  fontSize: string;
+  padding: string;
+  lineNumbers: boolean;
+  windowControls: boolean;
+  shadow: boolean;
+  backgroundStyle: BackgroundStyle;
+  scale: string;
+  watermark: string;
 }
 
-async function askNumber(
-  ask: (prompt: string) => Promise<string>,
-  label: string,
-  fallback: number,
-  min: number,
-  max: number
-): Promise<number> {
-  const raw = (await ask(`${label} [${fallback}]: `)).trim();
-  if (raw === '') return fallback;
+function numberValidator(label: string, min: number, max: number) {
+  return (value: string): true | string => {
+    const parsed = Number(value);
+    if (!Number.isFinite(parsed) || parsed < min || parsed > max) {
+      return `${label} must be a number between ${min} and ${max}`;
+    }
 
-  const value = Number(raw);
-  if (!Number.isFinite(value) || value < min || value > max) {
-    throw new Error(`Invalid value for ${label}: expected number between ${min} and ${max}`);
-  }
-
-  return value;
-}
-
-async function askBoolean(
-  ask: (prompt: string) => Promise<string>,
-  label: string,
-  fallback: boolean
-): Promise<boolean> {
-  const fallbackText = fallback ? 'Y/n' : 'y/N';
-  const raw = (await ask(`${label} [${fallbackText}]: `)).trim().toLowerCase();
-
-  if (raw === '') return fallback;
-  if (['y', 'yes', '1', 'true', 'on'].includes(raw)) return true;
-  if (['n', 'no', '0', 'false', 'off'].includes(raw)) return false;
-
-  throw new Error(`Invalid value for ${label}: expected yes/no`);
-}
-
-async function askEnum<T extends string>(
-  ask: (prompt: string) => Promise<string>,
-  label: string,
-  values: readonly T[],
-  fallback: T
-): Promise<T> {
-  const raw = (await ask(`${label} (${values.join('/')}) [${fallback}]: `)).trim();
-  if (raw === '') return fallback;
-
-  if ((values as readonly string[]).includes(raw)) {
-    return raw as T;
-  }
-
-  throw new Error(`Invalid value for ${label}: expected one of ${values.join(', ')}`);
-}
-
-async function promptConfig(ask: (prompt: string) => Promise<string>): Promise<SnipgrapherConfig> {
-  const availableThemes = listThemes().map((theme) => theme.name);
-
-  const theme = await askEnum(ask, 'Theme', availableThemes, defaultConfig.theme);
-  const format = await askEnum<OutputFormat>(ask, 'Output format', ['svg', 'png', 'webp'], 'svg');
-  const fontFamily = await askString(ask, 'Font family', defaultConfig.fontFamily);
-  const fontSize = await askNumber(ask, 'Font size', defaultConfig.fontSize, 8, 64);
-  const padding = await askNumber(ask, 'Padding', defaultConfig.padding, 0, 256);
-  const lineNumbers = await askBoolean(ask, 'Show line numbers', defaultConfig.lineNumbers);
-  const windowControls = await askBoolean(
-    ask,
-    'Show macOS window controls',
-    defaultConfig.windowControls
-  );
-  const shadow = await askBoolean(ask, 'Enable shadow', defaultConfig.shadow);
-  const backgroundStyle = await askEnum<BackgroundStyle>(
-    ask,
-    'Background style',
-    ['solid', 'gradient'],
-    defaultConfig.backgroundStyle
-  );
-  const scale = await askNumber(ask, 'PNG render scale', defaultConfig.scale, 1, 4);
-  const watermark = await askString(ask, 'Watermark (empty to disable)', defaultConfig.watermark ?? '');
-
-  return {
-    theme,
-    format,
-    fontFamily,
-    fontSize,
-    padding,
-    lineNumbers,
-    windowControls,
-    shadow,
-    backgroundStyle,
-    scale,
-    watermark
+    return true;
   };
 }
 
-export async function runInit(cwd = process.cwd()): Promise<void> {
+function parseNumber(value: string, label: string): number {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) {
+    throw new Error(`Invalid value for ${label}: expected a number`);
+  }
+
+  return parsed;
+}
+
+async function promptConfig(): Promise<SnipgrapherConfig> {
+  const availableThemes = listThemes().map((theme) => theme.name);
+
+  const answers = await inquirer.prompt<InitWizardAnswers>([
+    {
+      type: 'list',
+      name: 'theme',
+      message: 'Choose a theme',
+      choices: availableThemes,
+      default: defaultConfig.theme
+    },
+    {
+      type: 'list',
+      name: 'format',
+      message: 'Default output format',
+      choices: ['svg', 'png', 'webp'],
+      default: defaultConfig.format
+    },
+    {
+      type: 'input',
+      name: 'fontFamily',
+      message: 'Font family',
+      default: defaultConfig.fontFamily
+    },
+    {
+      type: 'input',
+      name: 'fontSize',
+      message: 'Font size',
+      default: String(defaultConfig.fontSize),
+      validate: numberValidator('fontSize', 8, 64)
+    },
+    {
+      type: 'input',
+      name: 'padding',
+      message: 'Padding',
+      default: String(defaultConfig.padding),
+      validate: numberValidator('padding', 0, 256)
+    },
+    {
+      type: 'confirm',
+      name: 'lineNumbers',
+      message: 'Show line numbers?',
+      default: defaultConfig.lineNumbers
+    },
+    {
+      type: 'confirm',
+      name: 'windowControls',
+      message: 'Show macOS window controls?',
+      default: defaultConfig.windowControls
+    },
+    {
+      type: 'confirm',
+      name: 'shadow',
+      message: 'Enable drop shadow?',
+      default: defaultConfig.shadow
+    },
+    {
+      type: 'list',
+      name: 'backgroundStyle',
+      message: 'Background style',
+      choices: ['solid', 'gradient'],
+      default: defaultConfig.backgroundStyle
+    },
+    {
+      type: 'input',
+      name: 'scale',
+      message: 'PNG render scale',
+      default: String(defaultConfig.scale),
+      validate: numberValidator('scale', 1, 4)
+    },
+    {
+      type: 'input',
+      name: 'watermark',
+      message: 'Watermark text (leave empty for none)',
+      default: defaultConfig.watermark ?? ''
+    }
+  ]);
+
+  return {
+    theme: answers.theme,
+    format: answers.format,
+    fontFamily: answers.fontFamily,
+    fontSize: parseNumber(answers.fontSize, 'fontSize'),
+    padding: parseNumber(answers.padding, 'padding'),
+    lineNumbers: answers.lineNumbers,
+    windowControls: answers.windowControls,
+    shadow: answers.shadow,
+    backgroundStyle: answers.backgroundStyle,
+    scale: parseNumber(answers.scale, 'scale'),
+    watermark: answers.watermark
+  };
+}
+
+export interface InitCommandOptions {
+  force?: boolean;
+}
+
+export async function runInit(cwd = process.cwd(), options: InitCommandOptions = {}): Promise<void> {
   const target = resolve(cwd, 'snipgrapher.config.json');
 
   try {
     await access(target);
-    throw new Error(`Config already exists: ${target}`);
+
+    if (!options.force) {
+      throw new Error(`Config already exists: ${target}. Use --force to overwrite.`);
+    }
   } catch (error) {
     if (error instanceof Error && !error.message.includes('ENOENT')) {
       throw error;
@@ -120,35 +158,25 @@ export async function runInit(cwd = process.cwd()): Promise<void> {
     throw new Error('init requires an interactive terminal (stdin/stdout must be TTY)');
   }
 
-  const rl = createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
+  console.log('snipgrapher init wizard');
 
-  try {
-    console.log('snipgrapher init wizard');
-    console.log('Press Enter to accept defaults.\n');
+  const config = await promptConfig();
+  validateConfig(config, 'config');
 
-    const config = await promptConfig((prompt) => rl.question(prompt));
-    validateConfig(config, 'config');
-
-    const template: SnipgrapherConfigFile = {
-      ...config,
-      defaultProfile: 'default',
-      profiles: {
-        default: {},
-        social: {
-          fontSize: 16,
-          padding: 48,
-          lineNumbers: false,
-          watermark: 'snipgrapher'
-        }
+  const template: SnipgrapherConfigFile = {
+    ...config,
+    defaultProfile: 'default',
+    profiles: {
+      default: {},
+      social: {
+        fontSize: 16,
+        padding: 48,
+        lineNumbers: false,
+        watermark: 'snipgrapher'
       }
-    };
+    }
+  };
 
-    await writeFile(target, `${JSON.stringify(template, null, 2)}\n`, 'utf8');
-    console.log(`\nCreated ${target}`);
-  } finally {
-    rl.close();
-  }
+  await writeFile(target, `${JSON.stringify(template, null, 2)}\n`, 'utf8');
+  console.log(`Created ${target}`);
 }
