@@ -1,13 +1,31 @@
-import { listFontFamilies } from '../fonts/fonts.ts';
+import { listFontsWithAvailability } from '../fonts/availability.ts';
 
-export function runFontsList(): void {
+function formatAvailability(availability: 'bundled' | 'installed' | 'generic' | 'unavailable'): string {
+  if (availability === 'bundled') {
+    return 'bundled';
+  }
+
+  if (availability === 'installed') {
+    return 'installed';
+  }
+
+  if (availability === 'generic') {
+    return 'generic fallback';
+  }
+
+  return 'unavailable';
+}
+
+export async function runFontsList(): Promise<void> {
   console.log('Available font-family values:');
-  for (const fontFamily of listFontFamilies()) {
-    console.log(fontFamily);
+
+  const fonts = await listFontsWithAvailability();
+  for (const font of fonts) {
+    const status = formatAvailability(font.availability);
+    console.log(`${font.family}\t[${status}]`);
   }
 
   console.log('');
-  console.log(
-    'Note: named fonts require local installation. PNG/WebP rendering uses system font fallback when a font is missing.'
-  );
+  console.log('Legend: bundled fonts ship with snipgrapher for PNG/WebP rendering.');
+  console.log('System fonts depend on local installation.');
 }

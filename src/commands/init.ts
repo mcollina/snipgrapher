@@ -5,7 +5,7 @@ import inquirer from 'inquirer';
 
 import { defaultConfig } from '../config/defaults.ts';
 import { validateConfig } from '../config/validate-config.ts';
-import { listFontFamilies } from '../fonts/fonts.ts';
+import { listFontsWithAvailability } from '../fonts/availability.ts';
 import { listThemes } from '../theme/themes.ts';
 import type {
   BackgroundStyle,
@@ -69,9 +69,30 @@ function resolveFontFamily(answers: InitWizardAnswers): string {
   return defaultConfig.fontFamily;
 }
 
+function formatFontChoiceLabel(availability: 'bundled' | 'installed' | 'generic' | 'unavailable') {
+  if (availability === 'bundled') {
+    return 'bundled';
+  }
+
+  if (availability === 'installed') {
+    return 'installed';
+  }
+
+  if (availability === 'generic') {
+    return 'generic fallback';
+  }
+
+  return 'unavailable';
+}
+
 async function promptConfig(): Promise<SnipgrapherConfig> {
   const availableThemes = listThemes().map((theme) => theme.name);
-  const availableFontFamilies = listFontFamilies();
+  const availableFonts = await listFontsWithAvailability();
+  const defaultFontInChoices = availableFonts.some((font) => font.family === defaultConfig.fontFamily);
+  const fontChoices = availableFonts.map((font) => ({
+    name: `${font.family} [${formatFontChoiceLabel(font.availability)}]`,
+    value: font.family
+  }));
 
   const answers = (await inquirer.prompt([
     {
@@ -92,10 +113,8 @@ async function promptConfig(): Promise<SnipgrapherConfig> {
       type: 'list',
       name: 'fontFamilyChoice',
       message: 'Choose a font family',
-      choices: [...availableFontFamilies, customFontChoice],
-      default: availableFontFamilies.includes(defaultConfig.fontFamily)
-        ? defaultConfig.fontFamily
-        : customFontChoice
+      choices: [...fontChoices, { name: customFontChoice, value: customFontChoice }],
+      default: defaultFontInChoices ? defaultConfig.fontFamily : customFontChoice
     },
     {
       type: 'input',

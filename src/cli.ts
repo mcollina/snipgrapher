@@ -180,9 +180,9 @@ program
 
 program
   .command('fonts')
-  .description('List curated font-family values for --font-family and init wizard')
-  .action(() => {
-    runFontsList();
+  .description('List curated font-family values and their availability on this system')
+  .action(async () => {
+    await runFontsList();
   });
 
 program.command('doctor').action(async () => {
