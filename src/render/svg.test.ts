@@ -48,3 +48,24 @@ test('renderSvg renders window controls and watermark', async () => {
   assert.match(svg, /#ff5f57/);
   assert.match(svg, /snipgrapher/);
 });
+
+test('renderSvg uses borderRadius from options', async () => {
+  const svg = await renderSvg({
+    ...baseOptions,
+    code: 'const x = 1',
+    borderRadius: 0
+  });
+
+  // Should have rx="0" for both background and card rects
+  assert.match(svg, /rx="0"/);
+});
+
+test('renderSvg defaults borderRadius to 14 when not specified', async () => {
+  const svg = await renderSvg({
+    ...baseOptions,
+    code: 'const x = 1'
+  });
+
+  // Should have rx="14" (the default)
+  assert.match(svg, /rx="14"/);
+});
