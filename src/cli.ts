@@ -47,7 +47,9 @@ program
   .option('--json', 'Print machine-readable JSON result')
   .action(async (input: string | undefined, options, command: Command) => {
     if (options.json && !options.output && !process.stdout.isTTY) {
-      throw new Error('Cannot combine --json with redirected render output. Use --output to write the image.');
+      throw new Error(
+        'Cannot combine --json with redirected render output. Use --output to write the image.'
+      );
     }
 
     const result = await runRender(input, {

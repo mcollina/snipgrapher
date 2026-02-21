@@ -5,7 +5,12 @@ import { createInterface } from 'node:readline/promises';
 import { defaultConfig } from '../config/defaults.ts';
 import { validateConfig } from '../config/validate-config.ts';
 import { listThemes } from '../theme/themes.ts';
-import type { BackgroundStyle, OutputFormat, SnipgrapherConfig, SnipgrapherConfigFile } from '../types.ts';
+import type {
+  BackgroundStyle,
+  OutputFormat,
+  SnipgrapherConfig,
+  SnipgrapherConfigFile
+} from '../types.ts';
 
 async function askString(
   ask: (prompt: string) => Promise<string>,
@@ -87,7 +92,11 @@ async function promptConfig(ask: (prompt: string) => Promise<string>): Promise<S
     defaultConfig.backgroundStyle
   );
   const scale = await askNumber(ask, 'PNG render scale', defaultConfig.scale, 1, 4);
-  const watermark = await askString(ask, 'Watermark (empty to disable)', defaultConfig.watermark ?? '');
+  const watermark = await askString(
+    ask,
+    'Watermark (empty to disable)',
+    defaultConfig.watermark ?? ''
+  );
 
   return {
     theme,
