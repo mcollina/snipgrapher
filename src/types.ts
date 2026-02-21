@@ -28,6 +28,7 @@ export interface RenderOptions {
   watermark?: string;
   language?: string;
   title?: string;
+  borderRadius?: number;
 }
 
 export interface SnipgrapherConfig {
@@ -42,6 +43,7 @@ export interface SnipgrapherConfig {
   scale: number;
   watermark?: string;
   format: OutputFormat;
+  borderRadius?: number;
 }
 
 export interface SnipgrapherConfigFile extends Partial<SnipgrapherConfig> {
