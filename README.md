@@ -3,6 +3,10 @@
 CLI to generate image snippets from code files, stdin, or inline source.
 Uses Shiki-based syntax highlighting with a built-in fallback tokenizer.
 
+## Example output
+
+![Rendered snippet generated with snipgrapher](assets/readme-snippet.png)
+
 ## Install
 
 ```bash
