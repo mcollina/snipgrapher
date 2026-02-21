@@ -14,12 +14,7 @@ export interface FontWithAvailability {
 }
 
 function normalize(value: string): string {
-  return value
-    .toLowerCase()
-    .replaceAll('"', '')
-    .replaceAll("'", '')
-    .replaceAll(/\s+/g, ' ')
-    .trim();
+  return value.toLowerCase().replaceAll('"', '').replaceAll("'", '').replaceAll(/\s+/g, ' ').trim();
 }
 
 function extractFamilies(text: string): Set<string> {
@@ -130,7 +125,9 @@ export async function listFontsWithAvailability(): Promise<FontWithAvailability[
 
       return {
         family: font.family,
-        availability: installed.has(normalize(font.family)) ? ('installed' as const) : ('unavailable' as const)
+        availability: installed.has(normalize(font.family))
+          ? ('installed' as const)
+          : ('unavailable' as const)
       };
     });
   })();

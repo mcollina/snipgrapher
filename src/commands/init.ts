@@ -88,7 +88,9 @@ function formatFontChoiceLabel(availability: 'bundled' | 'installed' | 'generic'
 async function promptConfig(): Promise<SnipgrapherConfig> {
   const availableThemes = listThemes().map((theme) => theme.name);
   const availableFonts = await listFontsWithAvailability();
-  const defaultFontInChoices = availableFonts.some((font) => font.family === defaultConfig.fontFamily);
+  const defaultFontInChoices = availableFonts.some(
+    (font) => font.family === defaultConfig.fontFamily
+  );
   const fontChoices = availableFonts.map((font) => ({
     name: `${font.family} [${formatFontChoiceLabel(font.availability)}]`,
     value: font.family

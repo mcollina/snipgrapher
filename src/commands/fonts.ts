@@ -1,6 +1,8 @@
 import { listFontsWithAvailability } from '../fonts/availability.ts';
 
-function formatAvailability(availability: 'bundled' | 'installed' | 'generic' | 'unavailable'): string {
+function formatAvailability(
+  availability: 'bundled' | 'installed' | 'generic' | 'unavailable'
+): string {
   if (availability === 'bundled') {
     return 'bundled';
   }
