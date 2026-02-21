@@ -34,6 +34,8 @@ When `--output` is omitted and stdout is redirected (non-TTY), rendered image by
 
 `snipgrapher init` starts an interactive Inquirer-based wizard with selection prompts to generate `snipgrapher.config.json` (requires a TTY). Use `--force` to overwrite an existing config file.
 
+Theme support now includes the full original Carbon theme set (run `snipgrapher themes list` to see all names).
+
 ## Config
 
 Supported config files (first match wins):

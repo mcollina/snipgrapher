@@ -1,7 +1,6 @@
 import { createHighlighter } from 'shiki';
 
 import { getTheme } from '../theme/themes.ts';
-import type { Theme } from '../types.ts';
 import { colorizeCode, type Segment } from './tokenize.ts';
 
 type SupportedLanguage =
@@ -33,16 +32,29 @@ const SUPPORTED_LANGUAGES: Set<SupportedLanguage> = new Set([
   'jsx'
 ]);
 
-const themeMap: Record<string, string> = {
+const SHIKI_THEME_MAP: Record<string, string> = {
   dracula: 'dracula',
   nord: 'nord',
-  githubDark: 'github-dark'
+  githubDark: 'github-dark',
+  monokai: 'monokai',
+  'night-owl': 'night-owl',
+  'one-light': 'one-light',
+  'one-dark': 'one-dark-pro',
+  material: 'material-theme',
+  'solarized dark': 'solarized-dark',
+  'solarized light': 'solarized-light',
+  'solarized-dark': 'solarized-dark',
+  'solarized-light': 'solarized-light',
+  'synthwave-84': 'synthwave-84',
+  vscode: 'dark-plus'
 };
+
+const SHIKI_THEMES = [...new Set(Object.values(SHIKI_THEME_MAP))];
 
 let highlighterPromise: ReturnType<typeof createHighlighter> | null = null;
 
-function toShikiTheme(theme: Theme): string {
-  return themeMap[theme.name] ?? 'dracula';
+function toShikiThemeName(themeName: string): string | undefined {
+  return SHIKI_THEME_MAP[themeName];
 }
 
 function normalizeLanguage(language: string | undefined): SupportedLanguage {
@@ -55,7 +67,7 @@ function normalizeLanguage(language: string | undefined): SupportedLanguage {
 async function getHighlighter() {
   if (!highlighterPromise) {
     highlighterPromise = createHighlighter({
-      themes: ['dracula', 'nord', 'github-dark'],
+      themes: SHIKI_THEMES,
       langs: [...SUPPORTED_LANGUAGES]
     });
   }
@@ -69,11 +81,16 @@ export async function highlightCode(
   language: string | undefined
 ): Promise<Segment[][]> {
   const theme = getTheme(themeName);
+  const shikiTheme = toShikiThemeName(theme.name);
+
+  if (!shikiTheme) {
+    return colorizeCode(code, theme);
+  }
 
   try {
     const highlighter = await getHighlighter();
     const tokens = highlighter.codeToTokens(code.replaceAll('\t', '  '), {
-      theme: toShikiTheme(theme),
+      theme: shikiTheme,
       lang: normalizeLanguage(language)
     });
 
