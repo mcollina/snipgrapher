@@ -48,6 +48,32 @@ snipgrapher always renders SVG first, then converts to PNG/WebP when requested.
 - If a named font is missing, the renderer falls back to an available system font.
 - Generic families like `ui-monospace` and `monospace` are the safest cross-platform choices.
 
+## Programmatic usage
+
+You can also use `snipgrapher` as a Node.js module:
+
+```ts
+import { renderToFile } from 'snipgrapher';
+
+await renderToFile({
+  code: 'export const greet = (name: string) => `Hello, ${name}!`;',
+  outputFile: './snippet.png',
+  format: 'png',
+  theme: 'dracula',
+  fontFamily: 'JetBrains Mono',
+  fontSize: 14,
+  padding: 32,
+  lineNumbers: true,
+  windowControls: true,
+  shadow: true,
+  backgroundStyle: 'gradient',
+  scale: 2,
+  language: 'typescript',
+  title: 'example.ts',
+  watermark: 'snipgrapher'
+});
+```
+
 ## Config
 
 Supported config files (first match wins):
