@@ -4,6 +4,7 @@ import { Command } from 'commander';
 
 import { runBatch } from './commands/batch.ts';
 import { runDoctor } from './commands/doctor.ts';
+import { runFontsList } from './commands/fonts.ts';
 import { runInit } from './commands/init.ts';
 import { runRender } from './commands/render.ts';
 import { runThemesList, runThemesPreview } from './commands/themes.ts';
@@ -175,6 +176,13 @@ program
     }
 
     runThemesList();
+  });
+
+program
+  .command('fonts')
+  .description('List curated font-family values for --font-family and init wizard')
+  .action(() => {
+    runFontsList();
   });
 
 program.command('doctor').action(async () => {

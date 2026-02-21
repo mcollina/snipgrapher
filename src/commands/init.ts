@@ -5,6 +5,7 @@ import inquirer from 'inquirer';
 
 import { defaultConfig } from '../config/defaults.ts';
 import { validateConfig } from '../config/validate-config.ts';
+import { listFontFamilies } from '../fonts/fonts.ts';
 import { listThemes } from '../theme/themes.ts';
 import type {
   BackgroundStyle,
@@ -12,20 +13,6 @@ import type {
   SnipgrapherConfig,
   SnipgrapherConfigFile
 } from '../types.ts';
-
-const curatedFontFamilies = [
-  'Fira Code',
-  'JetBrains Mono',
-  'Cascadia Code',
-  'Source Code Pro',
-  'IBM Plex Mono',
-  'SFMono-Regular',
-  'Menlo',
-  'Monaco',
-  'Consolas',
-  'ui-monospace',
-  'monospace'
-] as const;
 
 const customFontChoice = 'Custom (enter manually)';
 
@@ -84,6 +71,7 @@ function resolveFontFamily(answers: InitWizardAnswers): string {
 
 async function promptConfig(): Promise<SnipgrapherConfig> {
   const availableThemes = listThemes().map((theme) => theme.name);
+  const availableFontFamilies = listFontFamilies();
 
   const answers = (await inquirer.prompt([
     {
@@ -104,8 +92,8 @@ async function promptConfig(): Promise<SnipgrapherConfig> {
       type: 'list',
       name: 'fontFamilyChoice',
       message: 'Choose a font family',
-      choices: [...curatedFontFamilies, customFontChoice],
-      default: curatedFontFamilies.some((font) => font === defaultConfig.fontFamily)
+      choices: [...availableFontFamilies, customFontChoice],
+      default: availableFontFamilies.includes(defaultConfig.fontFamily)
         ? defaultConfig.fontFamily
         : customFontChoice
     },
