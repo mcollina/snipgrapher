@@ -13,10 +13,28 @@ import type {
   SnipgrapherConfigFile
 } from '../types.ts';
 
+const curatedFontFamilies = [
+  'Fira Code',
+  'JetBrains Mono',
+  'Cascadia Code',
+  'Source Code Pro',
+  'IBM Plex Mono',
+  'SFMono-Regular',
+  'Menlo',
+  'Monaco',
+  'Consolas',
+  'ui-monospace',
+  'monospace'
+] as const;
+
+const customFontChoice = 'Custom (enter manually)';
+
 interface InitWizardAnswers {
   theme: string;
   format: OutputFormat;
-  fontFamily: string;
+  fontFamily?: string;
+  fontFamilyChoice?: string;
+  customFontFamily?: string;
   fontSize: string;
   padding: string;
   lineNumbers: boolean;
@@ -47,10 +65,27 @@ function parseNumber(value: string, label: string): number {
   return parsed;
 }
 
+function resolveFontFamily(answers: InitWizardAnswers): string {
+  if (answers.fontFamily && answers.fontFamily.trim().length > 0) {
+    return answers.fontFamily.trim();
+  }
+
+  if (answers.fontFamilyChoice && answers.fontFamilyChoice !== customFontChoice) {
+    return answers.fontFamilyChoice;
+  }
+
+  const customFontFamily = answers.customFontFamily?.trim();
+  if (customFontFamily) {
+    return customFontFamily;
+  }
+
+  return defaultConfig.fontFamily;
+}
+
 async function promptConfig(): Promise<SnipgrapherConfig> {
   const availableThemes = listThemes().map((theme) => theme.name);
 
-  const answers = await inquirer.prompt<InitWizardAnswers>([
+  const answers = (await inquirer.prompt([
     {
       type: 'list',
       name: 'theme',
@@ -66,10 +101,20 @@ async function promptConfig(): Promise<SnipgrapherConfig> {
       default: defaultConfig.format
     },
     {
+      type: 'list',
+      name: 'fontFamilyChoice',
+      message: 'Choose a font family',
+      choices: [...curatedFontFamilies, customFontChoice],
+      default: curatedFontFamilies.some((font) => font === defaultConfig.fontFamily)
+        ? defaultConfig.fontFamily
+        : customFontChoice
+    },
+    {
       type: 'input',
-      name: 'fontFamily',
-      message: 'Font family',
-      default: defaultConfig.fontFamily
+      name: 'customFontFamily',
+      message: 'Custom font family',
+      when: (answers: InitWizardAnswers) => answers.fontFamilyChoice === customFontChoice,
+      validate: (value: string) => (value.trim().length > 0 ? true : 'Font family cannot be empty')
     },
     {
       type: 'input',
@@ -123,12 +168,12 @@ async function promptConfig(): Promise<SnipgrapherConfig> {
       message: 'Watermark text (leave empty for none)',
       default: defaultConfig.watermark ?? ''
     }
-  ]);
+  ] as any)) as InitWizardAnswers;
 
   return {
     theme: answers.theme,
     format: answers.format,
-    fontFamily: answers.fontFamily,
+    fontFamily: resolveFontFamily(answers),
     fontSize: parseNumber(answers.fontSize, 'fontSize'),
     padding: parseNumber(answers.padding, 'padding'),
     lineNumbers: answers.lineNumbers,
