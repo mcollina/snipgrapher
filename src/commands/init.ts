@@ -5,6 +5,7 @@ import inquirer from 'inquirer';
 
 import { defaultConfig } from '../config/defaults.ts';
 import { validateConfig } from '../config/validate-config.ts';
+import { listFontsWithAvailability } from '../fonts/availability.ts';
 import { listThemes } from '../theme/themes.ts';
 import type {
   BackgroundStyle,
@@ -13,10 +14,14 @@ import type {
   SnipgrapherConfigFile
 } from '../types.ts';
 
+const customFontChoice = 'Custom (enter manually)';
+
 interface InitWizardAnswers {
   theme: string;
   format: OutputFormat;
-  fontFamily: string;
+  fontFamily?: string;
+  fontFamilyChoice?: string;
+  customFontFamily?: string;
   fontSize: string;
   padding: string;
   lineNumbers: boolean;
@@ -47,10 +52,51 @@ function parseNumber(value: string, label: string): number {
   return parsed;
 }
 
+function resolveFontFamily(answers: InitWizardAnswers): string {
+  if (answers.fontFamily && answers.fontFamily.trim().length > 0) {
+    return answers.fontFamily.trim();
+  }
+
+  if (answers.fontFamilyChoice && answers.fontFamilyChoice !== customFontChoice) {
+    return answers.fontFamilyChoice;
+  }
+
+  const customFontFamily = answers.customFontFamily?.trim();
+  if (customFontFamily) {
+    return customFontFamily;
+  }
+
+  return defaultConfig.fontFamily;
+}
+
+function formatFontChoiceLabel(availability: 'bundled' | 'installed' | 'generic' | 'unavailable') {
+  if (availability === 'bundled') {
+    return 'bundled';
+  }
+
+  if (availability === 'installed') {
+    return 'installed';
+  }
+
+  if (availability === 'generic') {
+    return 'generic fallback';
+  }
+
+  return 'unavailable';
+}
+
 async function promptConfig(): Promise<SnipgrapherConfig> {
   const availableThemes = listThemes().map((theme) => theme.name);
+  const availableFonts = await listFontsWithAvailability();
+  const defaultFontInChoices = availableFonts.some(
+    (font) => font.family === defaultConfig.fontFamily
+  );
+  const fontChoices = availableFonts.map((font) => ({
+    name: `${font.family} [${formatFontChoiceLabel(font.availability)}]`,
+    value: font.family
+  }));
 
-  const answers = await inquirer.prompt<InitWizardAnswers>([
+  const answers = (await inquirer.prompt([
     {
       type: 'list',
       name: 'theme',
@@ -66,10 +112,18 @@ async function promptConfig(): Promise<SnipgrapherConfig> {
       default: defaultConfig.format
     },
     {
+      type: 'list',
+      name: 'fontFamilyChoice',
+      message: 'Choose a font family',
+      choices: [...fontChoices, { name: customFontChoice, value: customFontChoice }],
+      default: defaultFontInChoices ? defaultConfig.fontFamily : customFontChoice
+    },
+    {
       type: 'input',
-      name: 'fontFamily',
-      message: 'Font family',
-      default: defaultConfig.fontFamily
+      name: 'customFontFamily',
+      message: 'Custom font family',
+      when: (answers: InitWizardAnswers) => answers.fontFamilyChoice === customFontChoice,
+      validate: (value: string) => (value.trim().length > 0 ? true : 'Font family cannot be empty')
     },
     {
       type: 'input',
@@ -123,12 +177,12 @@ async function promptConfig(): Promise<SnipgrapherConfig> {
       message: 'Watermark text (leave empty for none)',
       default: defaultConfig.watermark ?? ''
     }
-  ]);
+  ] as any)) as InitWizardAnswers;
 
   return {
     theme: answers.theme,
     format: answers.format,
-    fontFamily: answers.fontFamily,
+    fontFamily: resolveFontFamily(answers),
     fontSize: parseNumber(answers.fontSize, 'fontSize'),
     padding: parseNumber(answers.padding, 'padding'),
     lineNumbers: answers.lineNumbers,

@@ -54,7 +54,7 @@ test('runInit overwrites existing config when force is enabled', async (t) => {
   t.mock.method(inquirer, 'prompt', async () => ({
     theme: 'githubDark',
     format: 'svg',
-    fontFamily: 'Fira Code',
+    fontFamilyChoice: 'Fira Code',
     fontSize: '14',
     padding: '24',
     lineNumbers: false,
@@ -73,6 +73,7 @@ test('runInit overwrites existing config when force is enabled', async (t) => {
     const config = JSON.parse(raw) as Record<string, unknown>;
 
     assert.equal(config.theme, 'githubDark');
+    assert.equal(config.fontFamily, 'Fira Code');
     assert.equal(config.padding, 24);
     assert.equal(config.defaultProfile, 'default');
   } finally {
@@ -93,7 +94,8 @@ test('runInit writes config from inquirer answers', async (t) => {
   t.mock.method(inquirer, 'prompt', async () => ({
     theme: 'nord',
     format: 'webp',
-    fontFamily: 'JetBrains Mono',
+    fontFamilyChoice: 'Custom (enter manually)',
+    customFontFamily: 'JetBrains Mono',
     fontSize: '18',
     padding: '40',
     lineNumbers: true,

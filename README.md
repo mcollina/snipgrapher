@@ -3,6 +3,10 @@
 CLI to generate image snippets from code files, stdin, or inline source.
 Uses Shiki-based syntax highlighting with a built-in fallback tokenizer.
 
+## Example output
+
+![Rendered snippet generated with snipgrapher](assets/readme-snippet.png)
+
 ## Install
 
 ```bash
@@ -25,6 +29,7 @@ snipgrapher batch "./snippets/**/*.ts" --out-dir rendered --concurrency 6
 snipgrapher batch "./snippets/**/*.ts" --json --manifest rendered/manifest.json
 snipgrapher watch ./example.ts -o snippet.svg --profile social
 snipgrapher themes list
+snipgrapher fonts
 snipgrapher doctor
 snipgrapher init
 snipgrapher init --force
@@ -34,7 +39,44 @@ When `--output` is omitted and stdout is redirected (non-TTY), rendered image by
 
 `snipgrapher init` starts an interactive Inquirer-based wizard with selection prompts to generate `snipgrapher.config.json` (requires a TTY). Use `--force` to overwrite an existing config file.
 
+Use `snipgrapher fonts` to browse the curated `fontFamily` values used by the init wizard.
+
 Theme support now includes the full original Carbon theme set (run `snipgrapher themes list` to see all names).
+
+### Font rendering notes (SVG/PNG/WebP)
+
+snipgrapher always renders SVG first, then converts to PNG/WebP when requested.
+
+- `fontFamily` is passed as CSS/SVG `font-family`.
+- Named fonts (for example `Fira Code`, `JetBrains Mono`) must be installed on the host machine to render as intended.
+- If a named font is missing, the renderer falls back to an available system font.
+- Generic families like `ui-monospace` and `monospace` are the safest cross-platform choices.
+
+## Programmatic usage
+
+You can also use `snipgrapher` as a Node.js module:
+
+```ts
+import { renderToFile } from 'snipgrapher';
+
+await renderToFile({
+  code: 'export const greet = (name: string) => `Hello, ${name}!`;',
+  outputFile: './snippet.png',
+  format: 'png',
+  theme: 'dracula',
+  fontFamily: 'JetBrains Mono',
+  fontSize: 14,
+  padding: 32,
+  lineNumbers: true,
+  windowControls: true,
+  shadow: true,
+  backgroundStyle: 'gradient',
+  scale: 2,
+  language: 'typescript',
+  title: 'example.ts',
+  watermark: 'snipgrapher'
+});
+```
 
 ## Config
 
